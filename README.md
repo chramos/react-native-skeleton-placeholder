@@ -13,7 +13,7 @@ SkeletonPlaceholder is a React Native library to easily create an amazing loadin
 
 > Note: If your project already includes the **react-native-linear-gradient** you can skip the Step #1
 
-######Step #1
+###### Step #1
 Using yarn:
 
 ```bash
@@ -40,7 +40,7 @@ pod install
 ```
 
 &nbsp;
-######Step #2
+###### Step #2
 
 Using yarn:
 
