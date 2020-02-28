@@ -37,7 +37,7 @@ export default function SkeletonPlaceholder({
         easing: Easing.ease
       })
     ).start();
-  }, []);
+  });
 
   const translateX = animatedValue.interpolate({
     inputRange: [0, 1],
