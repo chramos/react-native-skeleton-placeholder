@@ -2,9 +2,7 @@
 
 SkeletonPlaceholder is a React Native library to easily create an amazing loading effect.
 
-|                                                 Example 1                                                 |                                                 Example 2                                                 |
-| :-------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------: |
-| ![](https://i.imgur.com/vWZJzZl.gif) | ![](https://i.imgur.com/iZFc7wz.gif) |
+![](https://i.imgur.com/3aDeSTZ.gif)
 
 <div style="background-color:#84d2ef80; padding: 20px; border-radius: 4px; color: #14485b">This package includes the dependency **react-native-linear-gradient**
 </div>
@@ -14,6 +12,7 @@ SkeletonPlaceholder is a React Native library to easily create an amazing loadin
 > Note: If your project already includes the **react-native-linear-gradient** you can skip the Step #1
 
 ###### Step #1
+
 Using yarn:
 
 ```bash
@@ -40,6 +39,7 @@ pod install
 ```
 
 &nbsp;
+
 ###### Step #2
 
 Using yarn:
@@ -56,88 +56,74 @@ npm install react-native-skeleton-placeholder --save
 
 ### Usage
 
-##### Example 1:
+There are two ways to use this package:
+
+with **SkeletonPlacehoder.Item** 🆕
 
 ```javascript
 import React from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
-function App() {
+const App = () => {
   return (
-    <SafeAreaView>
-      <SkeletonPlaceholder>
-        <View style={{ width: "100%", height: 140 }} />
-        <View
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 100,
-            borderWidth: 5,
-            borderColor: "white",
-            alignSelf: "center",
-            position: "relative",
-            top: -50
-          }}
-        />
-        <View style={{ width: 120, height: 20, alignSelf: "center" }} />
-        <View
-          style={{
-            width: 240,
-            height: 20,
-            alignSelf: "center",
-            marginTop: 12
-          }}
-        />
-      </SkeletonPlaceholder>
-    </SafeAreaView>
+    <SkeletonPlaceholder>
+      <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
+        <SkeletonPlaceholder.Item width={60} height={60} borderRadius={50} />
+        <SkeletonPlaceholder.Item marginLeft={20}>
+          <SkeletonPlaceholder.Item width={120} height={20} borderRadius={4} />
+          <SkeletonPlaceholder.Item
+            marginTop={6}
+            width={80}
+            height={20}
+            borderRadius={4}
+          />
+        </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder.Item>
+    </SkeletonPlaceholder>
   );
-}
+};
 ```
 
-#### Example 2:
+or with **View**
 
 ```javascript
 import React from "react";
-import { SafeAreaView, View } from "react-native";
+import { View } from "react-native";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
-function App() {
+const App = () => {
   return (
-    <SafeAreaView>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <View key={index} style={{ marginBottom: 12 }}>
-          <SkeletonPlaceholder>
-            <View style={{ flexDirection: "row" }}>
-              <View style={{ width: 100, height: 100 }} />
-
-              <View
-                style={{
-                  justifyContent: "space-between",
-                  marginLeft: 12,
-                  flex: 1
-                }}
-              >
-                <View style={{ width: "50%", height: 20 }} />
-                <View style={{ width: "30%", height: 20 }} />
-                <View style={{ width: "80%", height: 20 }} />
-              </View>
-            </View>
-          </SkeletonPlaceholder>
+    <SkeletonPlaceholder>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View style={{ width: 60, height: 60, borderRadius: 50 }} />
+        <View style={{ marginLeft: 20 }}>
+          <View style={{ width: 120, height: 20, borderRadius: 4 }} />
+          <View
+            style={{ marginTop: 6, width: 80, height: 20, borderRadius: 4 }}
+          />
         </View>
-      ))}
-    </SafeAreaView>
+      </View>
+    </SkeletonPlaceholder>
   );
-}
+};
 ```
 
 ### Properties
 
-|        Prop         |                  Description                   |  Type  |  Default  |
-| :-----------------: | :--------------------------------------------: | :----: | :-------: |
-| **backgroundColor** | Determines the highlight color of placeholder  | string | _#E1E9EE_ |
-| **highlightColor**  | Determines the highlight color of placeholder  | string | _#F2F8FC_ |
-|      **speed**      | Determines the animation speed in milliseconds | number |   _800_   |
+#### SkeletonPlaceholder
+
+|      Prop       |                  Description                   |  Type  |  Default  |
+| :-------------: | :--------------------------------------------: | :----: | :-------: |
+| backgroundColor |      Determines the color of placeholder       | string | _#E1E9EE_ |
+| highlightColor  | Determines the highlight color of placeholder  | string | _#F2F8FC_ |
+|      speed      | Determines the animation speed in milliseconds | number |   _800_   |
+
+#### SkeletonPlaceholder.Item
+
+| Prop |            Description            | Type | Default |
+| :--: | :-------------------------------: | :--: | :-----: |
+| any  | Any view style props was accepted | any  |
 
 ### Contributing
 
