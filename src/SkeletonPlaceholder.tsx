@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Animated, View, StyleSheet, Easing } from "react-native";
+import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
 interface SkeletonPlaceholderProps {
@@ -46,7 +46,13 @@ export default function SkeletonPlaceholder({
 
   const getChildren = (element: JSX.Element | JSX.Element[]) => {
     return React.Children.map(element, (child: JSX.Element, index: number) => {
-      const { style } = child.props;
+      let style;
+      if (child.type.displayName === "SkeletonPlaceholderItem") {
+        const { children, ...styles } = child.props;
+        style = styles;
+      } else {
+        style = child.props.style;
+      }
       if (child.props.children) {
         return (
           <View key={index} style={style}>
@@ -87,6 +93,20 @@ export default function SkeletonPlaceholder({
 
   return <React.Fragment>{getChildren(children)}</React.Fragment>;
 }
+
+interface SkeletonPlaceholderItem extends ViewStyle {
+  children?: JSX.Element | JSX.Element[];
+}
+
+SkeletonPlaceholder.Item = ({
+  children,
+  ...style
+}: SkeletonPlaceholderItem): JSX.Element => (
+  <View style={style}>{children}</View>
+);
+
+//@ts-ignore
+SkeletonPlaceholder.Item.displayName = "SkeletonPlaceholderItem";
 
 SkeletonPlaceholder.defaultProps = {
   backgroundColor: "#E1E9EE",
