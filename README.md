@@ -38,7 +38,7 @@ cd ios
 pod install
 ```
 
-&nbsp;
+&nbsp;&nbsp;
 
 ###### Step #2
 
