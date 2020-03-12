@@ -1,2 +1,1 @@
-*.ts linguist-detectable=true
-*.js linguist-detectable=true
+ *.* linguist-language=TypeScript
