@@ -1,6 +1,6 @@
 ## SkeletonPlaceholder
 
-SkeletonPlaceholder is a React Native library to easily create an amazing loading effect.
+SkeletonPlaceholder is a React Native library to easily create an amazing loading effect. [ANDROID & IOS]
 
 ![](https://i.imgur.com/3aDeSTZ.gif)
 
