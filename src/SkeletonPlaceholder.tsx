@@ -34,7 +34,8 @@ export default function SkeletonPlaceholder({
       Animated.timing(animatedValue, {
         toValue: 1,
         duration: speed,
-        easing: Easing.ease
+        easing: Easing.ease,
+        useNativeDriver: true,
       })
     ).start();
   });
