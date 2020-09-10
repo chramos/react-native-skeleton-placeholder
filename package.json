@@ -20,11 +20,12 @@
   "author": "Henrique Ramos <chenrique.ramos12@gmail.com> (https://github.com/chramos)",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^13.1.1",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.17",
-    "@types/react-native": "^0.60.26",
-    "typescript": "^3.7.4"
+    "@types/react-native": "^0.63.17",
+    "react": "^16.13.1",
+    "react-native": "^0.63.2",
+    "typescript": "^4.0.2"
   },
   "peerDependencies": {
     "react-native-linear-gradient": "^2.5.6"
