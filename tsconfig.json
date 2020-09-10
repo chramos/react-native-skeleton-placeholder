@@ -4,6 +4,7 @@
     "declaration": true,
     "declarationMap": true,
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "lib": ["ES6"],
     "module": "CommonJS",
     "moduleResolution": "Node",

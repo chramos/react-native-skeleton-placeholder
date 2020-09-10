@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -27,25 +27,27 @@ export default function SkeletonPlaceholder({
   speed,
   highlightColor
 }: SkeletonPlaceholderProps): JSX.Element {
-  const animatedValue = new Animated.Value(0);
+  const animatedValue = useMemo(() => new Animated.Value(0), []);
+  const translateX = useMemo(() => animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-350, 350]
+  }), [animatedValue]);
 
-  React.useEffect(() => {
-    Animated.loop(
+  useEffect(() => {
+    const loop = Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
         duration: speed,
         easing: Easing.ease,
         useNativeDriver: true,
       })
-    ).start();
-  });
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [animatedValue, speed]);
 
-  const translateX = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-350, 350]
-  });
 
-  const getChildren = (element: JSX.Element | JSX.Element[]) => {
+  const getChildren = useCallback((element: JSX.Element | JSX.Element[]) => {
     return React.Children.map(element, (child: JSX.Element, index: number) => {
       let style;
       if (child.type.displayName === "SkeletonPlaceholderItem") {
@@ -90,7 +92,7 @@ export default function SkeletonPlaceholder({
         );
       }
     });
-  };
+  }, []);
 
   return <React.Fragment>{getChildren(children)}</React.Fragment>;
 }
@@ -103,8 +105,8 @@ SkeletonPlaceholder.Item = ({
   children,
   ...style
 }: SkeletonPlaceholderItem): JSX.Element => (
-  <View style={style}>{children}</View>
-);
+    <View style={style}>{children}</View>
+  );
 
 //@ts-ignore
 SkeletonPlaceholder.Item.displayName = "SkeletonPlaceholderItem";
