@@ -1,6 +1,9 @@
-import * as React from "react";
-import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Animated, View, StyleSheet, Easing, ViewStyle, StyleProp } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+
+const GRADIENT_START = { x: 0, y: 0 };
+const GRADIENT_END = { x: 1, y: 0 };
 
 interface SkeletonPlaceholderProps {
   /**
@@ -23,31 +26,36 @@ interface SkeletonPlaceholderProps {
 
 export default function SkeletonPlaceholder({
   children,
-  backgroundColor,
-  speed,
-  highlightColor
+  backgroundColor = "#E1E9EE",
+  speed = 800,
+  highlightColor = "#F2F8FC"
 }: SkeletonPlaceholderProps): JSX.Element {
-  const animatedValue = new Animated.Value(0);
+  const animatedValue = useMemo(() => new Animated.Value(0), []);
+  const translateX = useMemo(() => animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-350, 350]
+  }), [animatedValue]);
 
-  React.useEffect(() => {
-    Animated.loop(
+  useEffect(() => {
+    const loop = Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
         duration: speed,
         easing: Easing.ease,
         useNativeDriver: true,
       })
-    ).start();
-  });
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [animatedValue, speed]);
 
-  const translateX = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-350, 350]
-  });
+  const absoluteTranslateStyle = useMemo(() => ({ ...StyleSheet.absoluteFillObject, transform: [{ translateX }] }), [translateX]);
+  const gradientColors = useMemo(() => [backgroundColor, highlightColor, backgroundColor], [backgroundColor, highlightColor]);
+  const viewStyle = useMemo<StyleProp<ViewStyle>>(() => ({ backgroundColor, overflow: "hidden" }), [backgroundColor]);
 
-  const getChildren = (element: JSX.Element | JSX.Element[]) => {
+  const getChildren = useCallback((element: JSX.Element | JSX.Element[]) => {
     return React.Children.map(element, (child: JSX.Element, index: number) => {
-      let style;
+      let style: StyleProp<ViewStyle>;
       if (child.type.displayName === "SkeletonPlaceholderItem") {
         const { children, ...styles } = child.props;
         style = styles;
@@ -62,27 +70,14 @@ export default function SkeletonPlaceholder({
         );
       } else {
         return (
-          <View key={index} style={{ position: "relative" }}>
-            <View style={[style, { backgroundColor, overflow: "hidden" }]}>
-              <Animated.View
-                style={[
-                  StyleSheet.absoluteFill,
-                  {
-                    transform: [{ translateX }]
-                  }
-                ]}
-              >
+          <View key={index} style={styles.childContainer}>
+            <View style={[style, viewStyle]}>
+              <Animated.View style={absoluteTranslateStyle}>
                 <LinearGradient
-                  colors={
-                    [
-                      backgroundColor,
-                      highlightColor,
-                      backgroundColor
-                    ] as string[]
-                  }
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ flex: 1 }}
+                  colors={gradientColors}
+                  start={GRADIENT_START}
+                  end={GRADIENT_END}
+                  style={styles.gradient}
                 />
               </Animated.View>
             </View>
@@ -90,7 +85,7 @@ export default function SkeletonPlaceholder({
         );
       }
     });
-  };
+  }, [viewStyle, absoluteTranslateStyle, gradientColors]);
 
   return <React.Fragment>{getChildren(children)}</React.Fragment>;
 }
@@ -103,8 +98,8 @@ SkeletonPlaceholder.Item = ({
   children,
   ...style
 }: SkeletonPlaceholderItem): JSX.Element => (
-  <View style={style}>{children}</View>
-);
+    <View style={style}>{children}</View>
+  );
 
 //@ts-ignore
 SkeletonPlaceholder.Item.displayName = "SkeletonPlaceholderItem";
@@ -114,3 +109,12 @@ SkeletonPlaceholder.defaultProps = {
   highlightColor: "#F2F8FC",
   speed: 800
 };
+
+const styles = StyleSheet.create({
+  childContainer: {
+    position: 'relative'
+  },
+  gradient: {
+    flex: 1,
+  },
+})
