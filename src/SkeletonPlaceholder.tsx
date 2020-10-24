@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import * as React from "react";
 import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -30,8 +30,8 @@ export default function SkeletonPlaceholder({
   speed = 800,
   highlightColor = "#F2F8FC",
 }: SkeletonPlaceholderProps): JSX.Element {
-  const animatedValue = useMemo(() => new Animated.Value(0), []);
-  const translateX = useMemo(
+  const animatedValue = React.useMemo(() => new Animated.Value(0), []);
+  const translateX = React.useMemo(
     () =>
       animatedValue.interpolate({
         inputRange: [0, 1],
@@ -40,7 +40,7 @@ export default function SkeletonPlaceholder({
     [animatedValue]
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     const loop = Animated.loop(
       Animated.timing(animatedValue, {
         toValue: 1,
@@ -53,20 +53,20 @@ export default function SkeletonPlaceholder({
     return () => loop.stop();
   }, [animatedValue, speed]);
 
-  const absoluteTranslateStyle = useMemo(
+  const absoluteTranslateStyle = React.useMemo(
     () => ({ ...StyleSheet.absoluteFillObject, transform: [{ translateX }] }),
     [translateX]
   );
-  const gradientColors = useMemo(
+  const gradientColors = React.useMemo(
     () => [backgroundColor, highlightColor, backgroundColor],
     [backgroundColor, highlightColor]
   );
-  const viewStyle = useMemo<ViewStyle>(
+  const viewStyle = React.useMemo<ViewStyle>(
     () => ({ backgroundColor, overflow: "hidden" }),
     [backgroundColor]
   );
 
-  const getChildren = useCallback(
+  const getChildren = React.useCallback(
     (element: JSX.Element | JSX.Element[]) => {
       return React.Children.map(
         element,
