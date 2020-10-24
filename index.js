@@ -4,6 +4,6 @@
  * @repo
  */
 
-import SkeletonPlaceholder from "./lib/SkeletonPlaceholder";
+const SkeletonPlaceholder = require("./lib/SkeletonPlaceholder");
 
 export default SkeletonPlaceholder;

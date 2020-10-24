@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import {
-  Animated,
-  View,
-  StyleSheet,
-  Easing,
-  ViewStyle,
-  StyleProp,
-} from "react-native";
+import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
 const GRADIENT_START = { x: 0, y: 0 };
@@ -129,12 +122,6 @@ SkeletonPlaceholder.Item = ({
 
 //@ts-ignore
 SkeletonPlaceholder.Item.displayName = "SkeletonPlaceholderItem";
-
-SkeletonPlaceholder.defaultProps = {
-  backgroundColor: "#E1E9EE",
-  highlightColor: "#F2F8FC",
-  speed: 800,
-};
 
 const styles = StyleSheet.create({
   childContainer: {
