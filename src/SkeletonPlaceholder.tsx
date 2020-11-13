@@ -1,9 +1,15 @@
 import * as React from "react";
-import { Animated, View, StyleSheet, Easing, ViewStyle } from "react-native";
-import LinearGradient from "react-native-linear-gradient";
+import {
+  Animated,
+  View,
+  StyleSheet,
+  Easing,
+  ViewStyle,
+  Dimensions,
+} from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
 
-const GRADIENT_START = { x: 0, y: 0 };
-const GRADIENT_END = { x: 1, y: 0 };
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 interface SkeletonPlaceholderProps {
   /**
@@ -30,12 +36,13 @@ export default function SkeletonPlaceholder({
   speed = 800,
   highlightColor = "#F2F8FC",
 }: SkeletonPlaceholderProps): JSX.Element {
+  const [maskHeight, setMaskHeight] = React.useState<number>();
   const animatedValue = React.useMemo(() => new Animated.Value(0), []);
   const translateX = React.useMemo(
     () =>
       animatedValue.interpolate({
         inputRange: [0, 1],
-        outputRange: [-350, 350],
+        outputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
       }),
     [animatedValue]
   );
@@ -49,17 +56,15 @@ export default function SkeletonPlaceholder({
         useNativeDriver: true,
       })
     );
-    loop.start();
+    if (maskHeight) {
+      loop.start();
+    }
     return () => loop.stop();
-  }, [animatedValue, speed]);
+  }, [animatedValue, speed, maskHeight]);
 
   const absoluteTranslateStyle = React.useMemo(
     () => ({ ...StyleSheet.absoluteFillObject, transform: [{ translateX }] }),
     [translateX]
-  );
-  const gradientColors = React.useMemo(
-    () => [backgroundColor, highlightColor, backgroundColor],
-    [backgroundColor, highlightColor]
   );
   const viewStyle = React.useMemo<ViewStyle>(
     () => ({ backgroundColor, overflow: "hidden" }),
@@ -87,26 +92,70 @@ export default function SkeletonPlaceholder({
           } else {
             return (
               <View key={index} style={styles.childContainer}>
-                <View style={[style, viewStyle]}>
-                  <Animated.View style={absoluteTranslateStyle}>
-                    <LinearGradient
-                      colors={gradientColors}
-                      start={GRADIENT_START}
-                      end={GRADIENT_END}
-                      style={styles.gradient}
-                    />
-                  </Animated.View>
-                </View>
+                <View style={[style, viewStyle]} />
               </View>
             );
           }
         }
       );
     },
-    [viewStyle, absoluteTranslateStyle, gradientColors]
+    [viewStyle]
   );
 
-  return <React.Fragment>{getChildren(children)}</React.Fragment>;
+  return React.useMemo(
+    () =>
+      maskHeight ? (
+        <MaskedView
+          style={{ height: maskHeight }}
+          maskElement={
+            <View
+              style={{
+                backgroundColor: "transparent",
+              }}
+            >
+              {getChildren(children)}
+            </View>
+          }
+        >
+          <View style={{ flexGrow: 1, backgroundColor }} />
+          <Animated.View
+            style={[
+              {
+                flexDirection: "row",
+              },
+              absoluteTranslateStyle,
+            ]}
+          >
+            {Array.from({ length: SCREEN_WIDTH }).map((_, index) => {
+              const opacity = new Animated.Value(index);
+              return (
+                <Animated.View
+                  key={index}
+                  style={{
+                    width: 1,
+                    opacity: opacity.interpolate({
+                      inputRange: [0, SCREEN_WIDTH / 2, SCREEN_WIDTH],
+                      outputRange: [0, 1, 0],
+                    }),
+
+                    backgroundColor: highlightColor,
+                  }}
+                />
+              );
+            })}
+          </Animated.View>
+        </MaskedView>
+      ) : (
+        <View
+          onLayout={(event) => {
+            setMaskHeight(event.nativeEvent.layout.height);
+          }}
+        >
+          {getChildren(children)}
+        </View>
+      ),
+    [maskHeight]
+  );
 }
 
 interface SkeletonPlaceholderItem extends ViewStyle {
