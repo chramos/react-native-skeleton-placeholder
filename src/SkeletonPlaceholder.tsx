@@ -6,6 +6,7 @@ import {
   Easing,
   ViewStyle,
   Dimensions,
+  LayoutRectangle,
 } from "react-native";
 import MaskedView from "@react-native-community/masked-view";
 
@@ -36,7 +37,7 @@ export default function SkeletonPlaceholder({
   speed = 800,
   highlightColor = "#F2F8FC",
 }: SkeletonPlaceholderProps): JSX.Element {
-  const [maskHeight, setMaskHeight] = React.useState<number>();
+  const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValue = React.useMemo(() => new Animated.Value(0), []);
   const translateX = React.useMemo(
     () =>
@@ -56,11 +57,11 @@ export default function SkeletonPlaceholder({
         useNativeDriver: true,
       })
     );
-    if (maskHeight) {
+    if (layout?.width && layout?.height) {
       loop.start();
     }
     return () => loop.stop();
-  }, [animatedValue, speed, maskHeight]);
+  }, [animatedValue, speed, layout?.width, layout?.height]);
 
   const absoluteTranslateStyle = React.useMemo(
     () => ({ ...StyleSheet.absoluteFillObject, transform: [{ translateX }] }),
@@ -102,59 +103,55 @@ export default function SkeletonPlaceholder({
     [viewStyle]
   );
 
-  return React.useMemo(
-    () =>
-      maskHeight ? (
-        <MaskedView
-          style={{ height: maskHeight }}
-          maskElement={
-            <View
-              style={{
-                backgroundColor: "transparent",
-              }}
-            >
-              {getChildren(children)}
-            </View>
-          }
-        >
-          <View style={{ flexGrow: 1, backgroundColor }} />
-          <Animated.View
-            style={[
-              {
-                flexDirection: "row",
-              },
-              absoluteTranslateStyle,
-            ]}
-          >
-            {Array.from({ length: SCREEN_WIDTH }).map((_, index) => {
-              const opacity = new Animated.Value(index);
-              return (
-                <Animated.View
-                  key={index}
-                  style={{
-                    width: 1,
-                    opacity: opacity.interpolate({
-                      inputRange: [0, SCREEN_WIDTH / 2, SCREEN_WIDTH],
-                      outputRange: [0, 1, 0],
-                    }),
-
-                    backgroundColor: highlightColor,
-                  }}
-                />
-              );
-            })}
-          </Animated.View>
-        </MaskedView>
-      ) : (
+  return layout?.width && layout?.height ? (
+    <MaskedView
+      style={{ height: layout.height, width: layout.width }}
+      maskElement={
         <View
-          onLayout={(event) => {
-            setMaskHeight(event.nativeEvent.layout.height);
+          style={{
+            backgroundColor: "transparent",
           }}
         >
           {getChildren(children)}
         </View>
-      ),
-    [maskHeight]
+      }
+    >
+      <View style={{ flexGrow: 1, backgroundColor }} />
+      <Animated.View
+        style={[
+          {
+            flexDirection: "row",
+          },
+          absoluteTranslateStyle,
+        ]}
+      >
+        {Array.from({ length: SCREEN_WIDTH }).map((_, index) => {
+          const opacity = new Animated.Value(index);
+          return (
+            <Animated.View
+              key={index}
+              style={{
+                width: 1,
+                opacity: opacity.interpolate({
+                  inputRange: [0, SCREEN_WIDTH / 2, SCREEN_WIDTH],
+                  outputRange: [0, 1, 0],
+                }),
+
+                backgroundColor: highlightColor,
+              }}
+            />
+          );
+        })}
+      </Animated.View>
+    </MaskedView>
+  ) : (
+    <View
+      onLayout={(event) => {
+        setLayout(event.nativeEvent.layout);
+      }}
+    >
+      {getChildren(children)}
+    </View>
   );
 }
 
