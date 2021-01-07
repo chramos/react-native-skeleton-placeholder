@@ -7,7 +7,7 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires the dependency **@react-native-masked-view/masked-view**.<br/>If your project includes the react-navigation >= 4.x you probably already have it installed and you can SKIP de Step #1
+> Note: This package requires the dependency **@react-native-community/masked-view**.<br/>If your project includes the react-navigation >= 4.x you probably already have it installed and you can SKIP de Step #1
 
 ###### Step #1
 
