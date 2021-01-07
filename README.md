@@ -5,28 +5,37 @@ Android and iOS
 
 ![](https://i.imgur.com/3aDeSTZ.gif)
 
+<<<<<<< HEAD
 ### Installation
 
 > Note: This package requires the dependency **@react-native-masked-view/masked-view**.<br/>If your project includes the react-navigation >= 4.x you probably already have it installed and you can SKIP de Step #1
+=======
+<div style="background-color:#84d2ef80; padding: 20px; border-radius: 4px; color: #14485b">This package includes the dependency **@react-native-community/masked-view**
+</div>
+
+### Installation
+
+> Note: If your project already includes the **@react-native-community/masked-view** you can skip the Step #1
+>>>>>>> 3224c18fbfb87ca7c8f46ccf36b0946d66eddc60
 
 ###### Step #1
 
 Using yarn:
 
 ```bash
-yarn add @react-native-masked-view/masked-view
+yarn add @react-native-community/masked-view
 ```
 
 Using npm:
 
 ```bash
-npm install  @react-native-masked-view/masked-view --save
+npm install @react-native-community/masked-view --save
 ```
 
 If you are running a **react-native** version below 0.60:
 
 ```bash
-react-native link @react-native-masked-view/masked-view
+react-native link @react-native-community/masked-view
 ```
 
 Otherwise:
