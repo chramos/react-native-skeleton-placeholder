@@ -1,15 +1,13 @@
 ## SkeletonPlaceholder
 
-SkeletonPlaceholder is a React Native library to easily create an amazing loading effect. [ANDROID & IOS]
+SkeletonPlaceholder is a React Native library to easily create an amazing loading effect with FlexBox.<br/>
+Android and iOS
 
 ![](https://i.imgur.com/3aDeSTZ.gif)
 
-<div style="background-color:#84d2ef80; padding: 20px; border-radius: 4px; color: #14485b">This package includes the dependency **@react-native-masked-view/masked-view**
-</div>
-
 ### Installation
 
-> Note: If your project already includes the **@react-native-masked-view/masked-view** you can skip the Step #1
+> Note: This package requires the dependency **@react-native-masked-view/masked-view**.<br/>If your project includes the react-navigation >= 4.x you probably already have it installed and you can SKIP de Step #1
 
 ###### Step #1
 
@@ -127,7 +125,7 @@ const App = () => {
 
 ### Contributing
 
-Any help this module will be appreciated!
+You are welcome to contribute!
 
 ### License
 
