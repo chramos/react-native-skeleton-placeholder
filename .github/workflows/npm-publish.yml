@@ -1,23 +1,23 @@
-name: "🚀 release"
+# name: "🚀 release"
 
-on:
-  push:
-    branches:
-      - "master"
+# on:
+#   push:
+#     branches:
+#       - "master"
 
-jobs:
-  release:
-    name: 🚀 release
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📚 checkout
-        uses: actions/checkout@v2
-      - name: 🟢 node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org
-      - name: 🚀 publish
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+# jobs:
+#   release:
+#     name: 🚀 release
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: 📚 checkout
+#         uses: actions/checkout@v2
+#       - name: 🟢 node
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: 12
+#           registry-url: https://registry.npmjs.org
+#       - name: 🚀 publish
+#         run: npm publish --access public
+#         env:
+#           NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
