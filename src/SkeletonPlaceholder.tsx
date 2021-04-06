@@ -29,6 +29,10 @@ interface SkeletonPlaceholderProps {
    * Determines the animation speed in milliseconds. By default is 800
    */
   speed?: number;
+  /**
+   * Whether this View should render itself (and all of its children) into a single hardware texture on the GPU. By default is false
+   */
+   renderToHardwareTextureAndroid?: boolean;
 }
 
 export default function SkeletonPlaceholder({
@@ -36,6 +40,7 @@ export default function SkeletonPlaceholder({
   backgroundColor = "#E1E9EE",
   speed = 800,
   highlightColor = "#F2F8FC",
+  renderToHardwareTextureAndroid = false,
 }: SkeletonPlaceholderProps): JSX.Element {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValue = React.useMemo(() => new Animated.Value(0), []);
@@ -115,6 +120,7 @@ export default function SkeletonPlaceholder({
           {getChildren(children)}
         </View>
       }
+      renderToHardwareTextureAndroid={renderToHardwareTextureAndroid}
     >
       <View style={{ flexGrow: 1, backgroundColor }} />
       <Animated.View
