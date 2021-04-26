@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.10",
+    "@react-native-masked-view/masked-view": "^0.2.3",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-linear-gradient": "^2.5.6",
