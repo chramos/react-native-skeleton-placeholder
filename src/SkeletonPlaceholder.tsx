@@ -9,6 +9,7 @@ import {
   LayoutRectangle,
 } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
+import LinearGradient from "react-native-linear-gradient";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -125,23 +126,21 @@ export default function SkeletonPlaceholder({
           absoluteTranslateStyle,
         ]}
       >
-        {Array.from({ length: SCREEN_WIDTH }).map((_, index) => {
-          const opacity = new Animated.Value(index);
-          return (
-            <Animated.View
-              key={index}
-              style={{
-                width: 1,
-                opacity: opacity.interpolate({
-                  inputRange: [0, SCREEN_WIDTH / 2, SCREEN_WIDTH],
-                  outputRange: [0, 1, 0],
-                }),
-
-                backgroundColor: highlightColor,
-              }}
+        <MaskedView
+          style={StyleSheet.absoluteFill}
+          maskElement={
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[StyleSheet.absoluteFill]}
+              colors={["transparent", "black", "transparent"]}
             />
-          );
-        })}
+          }
+        >
+          <View
+            style={[StyleSheet.absoluteFill, { backgroundColor: highlightColor }]}
+          ></View>
+        </MaskedView>
       </Animated.View>
     </MaskedView>
   ) : (
