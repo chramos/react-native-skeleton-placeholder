@@ -67,6 +67,7 @@ export default function SkeletonPlaceholder({
       }
       return () => loop.stop();
     }
+    return;
   }, [animatedValue, speed, layout?.width, layout?.height]);
 
   const absoluteTranslateStyle = React.useMemo(
