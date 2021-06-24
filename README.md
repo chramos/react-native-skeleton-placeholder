@@ -111,11 +111,12 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|      Prop       |                  Description                   |  Type  |  Default  |
-| :-------------: | :--------------------------------------------: | :----: | :-------: |
-| backgroundColor |      Determines the color of placeholder       | string | _#E1E9EE_ |
-| highlightColor  | Determines the highlight color of placeholder  | string | _#F2F8FC_ |
-|      speed      | Determines the animation speed in milliseconds | number |   _800_   |
+|      Prop       |                             Description                              |     Type      |  Default  |
+| :-------------: | :------------------------------------------------------------------: | :-----------: | :-------: |
+| backgroundColor |                 Determines the color of placeholder                  |    string     | _#E1E9EE_ |
+| highlightColor  |            Determines the highlight color of placeholder             |    string     | _#F2F8FC_ |
+|      speed      | Determines the animation speed in milliseconds. 0 disables animation |    number     |   _800_   |
+|    direction    |                  Determines the animation direction                  | "right" \| "left" |   "right"   |
 
 #### SkeletonPlaceholder.Item
 

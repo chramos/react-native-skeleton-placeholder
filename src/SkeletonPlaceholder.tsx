@@ -19,12 +19,12 @@ interface SkeletonPlaceholderProps {
    */
   children: JSX.Element | JSX.Element[];
   /**
-   * Determines the color of placeholder. 
+   * Determines the color of placeholder.
    * @default #E1E9EE
    */
   backgroundColor?: string;
   /**
-   * Determines the highlight color of placeholder. 
+   * Determines the highlight color of placeholder.
    * @default #F2F8FC
    */
   highlightColor?: string;
@@ -33,6 +33,11 @@ interface SkeletonPlaceholderProps {
    * @default 800
    */
   speed?: number;
+  /**
+   * Determines the animation direction, left or right
+   * @default right
+   */
+  direction?: "left" | "right";
 }
 
 export default function SkeletonPlaceholder({
@@ -40,6 +45,7 @@ export default function SkeletonPlaceholder({
   backgroundColor = "#E1E9EE",
   speed = 800,
   highlightColor = "#F2F8FC",
+  direction = "right"
 }: SkeletonPlaceholderProps): JSX.Element {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValue = React.useMemo(() => new Animated.Value(0), []);
@@ -47,7 +53,10 @@ export default function SkeletonPlaceholder({
     () =>
       animatedValue.interpolate({
         inputRange: [0, 1],
-        outputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
+        outputRange:
+          direction === "right"
+            ? [-SCREEN_WIDTH, SCREEN_WIDTH]
+            : [SCREEN_WIDTH, -SCREEN_WIDTH],
       }),
     [animatedValue]
   );
