@@ -19,15 +19,18 @@ interface SkeletonPlaceholderProps {
    */
   children: JSX.Element | JSX.Element[];
   /**
-   * Determines the color of placeholder. By default is #E1E9EE
+   * Determines the color of placeholder. 
+   * @default #E1E9EE
    */
   backgroundColor?: string;
   /**
-   * Determines the highlight color of placeholder. By default is #F2F8FC
+   * Determines the highlight color of placeholder. 
+   * @default #F2F8FC
    */
   highlightColor?: string;
   /**
-   * Determines the animation speed in milliseconds. By default is 800
+   * Determines the animation speed in milliseconds. Use 0 to disable animation
+   * @default 800
    */
   speed?: number;
 }
@@ -50,18 +53,20 @@ export default function SkeletonPlaceholder({
   );
 
   React.useEffect(() => {
-    const loop = Animated.loop(
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: speed,
-        easing: Easing.ease,
-        useNativeDriver: true,
-      })
-    );
-    if (layout?.width && layout?.height) {
-      loop.start();
+    if (speed > 0) {
+      const loop = Animated.loop(
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: speed,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        })
+      );
+      if (layout?.width && layout?.height) {
+        loop.start();
+      }
+      return () => loop.stop();
     }
-    return () => loop.stop();
   }, [animatedValue, speed, layout?.width, layout?.height]);
 
   const absoluteTranslateStyle = React.useMemo(
