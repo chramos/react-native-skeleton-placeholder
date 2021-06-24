@@ -7,7 +7,7 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires **@react-native-masked-view/masked-view**.and **react-native-linear-gradient**
+> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
 
 ###### Step #1
 
