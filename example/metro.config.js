@@ -1,10 +1,12 @@
-/**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+const path = require('path');
+const extraNodeModules = {
+  'react-native-skeleton-placeholder': path.resolve(
+    // eslint-disable-next-line no-path-concat
+    __dirname + '/../src/SkeletonPlaceholder',
+  ),
+};
+// eslint-disable-next-line no-path-concat
+const watchFolders = [path.resolve(__dirname + '/../src')];
 module.exports = {
   transformer: {
     getTransformOptions: async () => ({
@@ -14,4 +16,15 @@ module.exports = {
       },
     }),
   },
+  resolver: {
+    extraNodeModules: new Proxy(extraNodeModules, {
+      get: (target, name) => {
+        //redirects dependencies referenced from src/ to local node_modules
+        return name in target
+          ? target[name]
+          : path.join(process.cwd(), `node_modules/${name}`);
+      },
+    }),
+  },
+  watchFolders,
 };
