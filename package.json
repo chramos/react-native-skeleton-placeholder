@@ -5,7 +5,8 @@
   "main": "lib/SkeletonPlaceholder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -rf ./lib && mkdir ./lib && tsc"
+    "build": "rm -rf ./lib && mkdir ./lib && tsc",
+    "prepack": "yarn build"
   },
   "keywords": [
     "skeleton",
