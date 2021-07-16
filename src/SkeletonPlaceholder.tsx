@@ -9,6 +9,7 @@ import {
   LayoutRectangle,
 } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
+import LinearGradient from "react-native-linear-gradient";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -18,17 +19,25 @@ interface SkeletonPlaceholderProps {
    */
   children: JSX.Element | JSX.Element[];
   /**
-   * Determines the color of placeholder. By default is #E1E9EE
+   * Determines the color of placeholder.
+   * @default #E1E9EE
    */
   backgroundColor?: string;
   /**
-   * Determines the highlight color of placeholder. By default is #F2F8FC
+   * Determines the highlight color of placeholder.
+   * @default #F2F8FC
    */
   highlightColor?: string;
   /**
-   * Determines the animation speed in milliseconds. By default is 800
+   * Determines the animation speed in milliseconds. Use 0 to disable animation
+   * @default 800
    */
   speed?: number;
+  /**
+   * Determines the animation direction, left or right
+   * @default right
+   */
+  direction?: "left" | "right";
 }
 
 export default function SkeletonPlaceholder({
@@ -36,6 +45,7 @@ export default function SkeletonPlaceholder({
   backgroundColor = "#E1E9EE",
   speed = 800,
   highlightColor = "#F2F8FC",
+  direction = "right",
 }: SkeletonPlaceholderProps): JSX.Element {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValue = React.useMemo(() => new Animated.Value(0), []);
@@ -43,24 +53,30 @@ export default function SkeletonPlaceholder({
     () =>
       animatedValue.interpolate({
         inputRange: [0, 1],
-        outputRange: [-SCREEN_WIDTH, SCREEN_WIDTH],
+        outputRange:
+          direction === "right"
+            ? [-SCREEN_WIDTH, SCREEN_WIDTH]
+            : [SCREEN_WIDTH, -SCREEN_WIDTH],
       }),
     [animatedValue]
   );
 
   React.useEffect(() => {
-    const loop = Animated.loop(
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: speed,
-        easing: Easing.ease,
-        useNativeDriver: true,
-      })
-    );
-    if (layout?.width && layout?.height) {
-      loop.start();
+    if (speed > 0) {
+      const loop = Animated.loop(
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: speed,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        })
+      );
+      if (layout?.width && layout?.height) {
+        loop.start();
+      }
+      return () => loop.stop();
     }
-    return () => loop.stop();
+    return;
   }, [animatedValue, speed, layout?.width, layout?.height]);
 
   const absoluteTranslateStyle = React.useMemo(
@@ -117,32 +133,35 @@ export default function SkeletonPlaceholder({
       }
     >
       <View style={{ flexGrow: 1, backgroundColor }} />
-      <Animated.View
-        style={[
-          {
-            flexDirection: "row",
-          },
-          absoluteTranslateStyle,
-        ]}
-      >
-        {Array.from({ length: SCREEN_WIDTH }).map((_, index) => {
-          const opacity = new Animated.Value(index);
-          return (
-            <Animated.View
-              key={index}
-              style={{
-                width: 1,
-                opacity: opacity.interpolate({
-                  inputRange: [0, SCREEN_WIDTH / 2, SCREEN_WIDTH],
-                  outputRange: [0, 1, 0],
-                }),
-
-                backgroundColor: highlightColor,
-              }}
-            />
-          );
-        })}
-      </Animated.View>
+      {speed > 0 && (
+        <Animated.View
+          style={[
+            {
+              flexDirection: "row",
+            },
+            absoluteTranslateStyle,
+          ]}
+        >
+          <MaskedView
+            style={StyleSheet.absoluteFill}
+            maskElement={
+              <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[StyleSheet.absoluteFill]}
+                colors={["transparent", "black", "transparent"]}
+              />
+            }
+          >
+            <View
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: highlightColor },
+              ]}
+            ></View>
+          </MaskedView>
+        </Animated.View>
+      )}
     </MaskedView>
   ) : (
     <View

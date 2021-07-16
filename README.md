@@ -7,26 +7,26 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires the dependency **@react-native-masked-view/masked-view**.
+> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
 
 ###### Step #1
 
 Using yarn:
 
 ```bash
-yarn add @react-native-masked-view/masked-view
+yarn add @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Using npm:
 
 ```bash
-npm install @react-native-masked-view/masked-view --save
+npm install @react-native-masked-view/masked-view react-native-linear-gradient --save
 ```
 
 If you are running a **react-native** version below 0.60:
 
 ```bash
-react-native link @react-native-masked-view/masked-view
+react-native link @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Otherwise:
@@ -111,11 +111,12 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|      Prop       |                  Description                   |  Type  |  Default  |
-| :-------------: | :--------------------------------------------: | :----: | :-------: |
-| backgroundColor |      Determines the color of placeholder       | string | _#E1E9EE_ |
-| highlightColor  | Determines the highlight color of placeholder  | string | _#F2F8FC_ |
-|      speed      | Determines the animation speed in milliseconds | number |   _800_   |
+|      Prop       |                             Description                              |     Type      |  Default  |
+| :-------------: | :------------------------------------------------------------------: | :-----------: | :-------: |
+| backgroundColor |                 Determines the color of placeholder                  |    string     | _#E1E9EE_ |
+| highlightColor  |            Determines the highlight color of placeholder             |    string     | _#F2F8FC_ |
+|      speed      | Determines the animation speed in milliseconds. 0 disables animation |    number     |   _800_   |
+|    direction    |                  Determines the animation direction                  | "right" \| "left" |   "right"   |
 
 #### SkeletonPlaceholder.Item
 
