@@ -102,13 +102,17 @@ export default function SkeletonPlaceholder({
           }
           if (child.props.children) {
             return (
-              <View key={index} style={style}>
+              <View key={index} style={style} testID={child.props.testID}>
                 {getChildren(child.props.children)}
               </View>
             );
           } else {
             return (
-              <View key={index} style={styles.childContainer}>
+              <View
+                key={index}
+                style={styles.childContainer}
+                testID={child.props.testID}
+              >
                 <View style={[style, viewStyle]} />
               </View>
             );
