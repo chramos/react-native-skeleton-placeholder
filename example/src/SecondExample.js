@@ -3,11 +3,11 @@ import {View} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const SecondExample = ({}) =>
-  Array.from({length: 3}).map((_, index) => (
+  Array.from({length: 2}).map((_, index) => (
     <View key={index} style={{marginBottom: 12}}>
-      <SkeletonPlaceholder>
+      <SkeletonPlaceholder borderRadius={4}>
         <SkeletonPlaceholder.Item flexDirection="row">
-          <SkeletonPlaceholder.Item width={100} height={100} borderRadius={4} />
+          <SkeletonPlaceholder.Item width={100} height={100} />
           <SkeletonPlaceholder.Item
             flex={1}
             justifyContent={'space-between'}
@@ -15,17 +15,14 @@ const SecondExample = ({}) =>
             <SkeletonPlaceholder.Item
               width="50%"
               height={20}
-              borderRadius={4}
             />
             <SkeletonPlaceholder.Item
               width="30%"
               height={20}
-              borderRadius={4}
             />
             <SkeletonPlaceholder.Item
               width="80%"
               height={20}
-              borderRadius={4}
             />
           </SkeletonPlaceholder.Item>
         </SkeletonPlaceholder.Item>

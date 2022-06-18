@@ -43,15 +43,22 @@ type SkeletonPlaceholderProps = {
    * @default true
    */
   enabled?: boolean;
+
+  /**
+   * Determines default border radius for placeholders from both SkeletonPlaceholder.Item and generated from children. 
+   * @default undefined
+   */
+  borderRadius?: number;
 }
 
-export const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & { Item: typeof Item } = ({
+const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & { Item: React.FC<SkeletonPlaceholderItemProps> } = ({
   children,
   enabled = true,
   backgroundColor = '#E1E9EE',
   highlightColor = '#F2F8FC',
   speed = 800,
   direction = 'right',
+  borderRadius,
 }) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
@@ -95,7 +102,7 @@ export const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & { Item: t
 
     return (
       <View style={styles.placeholderContainer}>
-        {transformToPlaceholder(children, backgroundColor)}
+        {transformToPlaceholder(children, backgroundColor, borderRadius)}
       </View>
     );
   }, [backgroundColor, children, enabled]);
@@ -131,17 +138,16 @@ export const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & { Item: t
   );
 };
 
-type SkeletonPlaceholderItem = ViewStyle & {
+type SkeletonPlaceholderItemProps = ViewStyle & {
   children?: JSX.Element | JSX.Element[];
 }
 SkeletonPlaceholder.Item = ({
   children,
   ...style
-}: SkeletonPlaceholderItem): JSX.Element => (
+}) => (
   <View style={style}>{children}</View>
 );
 SkeletonPlaceholder.Item.displayName = "SkeletonPlaceholderItem";
-
 
 const gradientProps = {
   start: {x: 0, y: 0},
@@ -152,6 +158,7 @@ const gradientProps = {
 const transformToPlaceholder = (
   element: JSX.Element | JSX.Element[] | null,
   backgroundColor: ColorValue,
+  defaultBorderRadius: number | undefined
 ) => {
   if (!element) return null;
 
@@ -170,6 +177,8 @@ const transformToPlaceholder = (
       style = child.props.style;
     }
 
+    const borderRadius = props.borderRadius ?? style?.borderRadius ?? defaultBorderRadius;
+    const width = props.width ?? style?.width;
     const height =
       props.height ??
       style?.height ??
@@ -178,12 +187,11 @@ const transformToPlaceholder = (
       props.fontSize ??
       style?.fontSize;
 
-    const width = props.width ?? style?.width;
-
     const finalStyle = [
       style,
       isPlaceholder ? [styles.placeholder, {backgroundColor}] : styles.placeholderContainer,
       {
+        borderRadius,
         height,
         width,
       },
@@ -194,7 +202,7 @@ const transformToPlaceholder = (
         key={key}
         style={finalStyle}
         children={
-          isPlaceholder ? undefined : transformToPlaceholder(child.props.children, backgroundColor)
+          isPlaceholder ? undefined : transformToPlaceholder(child.props.children, backgroundColor, borderRadius)
         }
       />
     );
@@ -212,3 +220,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
 });
+
+export default SkeletonPlaceholder;

@@ -2,7 +2,7 @@ import React from 'react';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const FirstExample = ({}) => (
-  <SkeletonPlaceholder>
+  <SkeletonPlaceholder borderRadius={4}>
     <SkeletonPlaceholder.Item
       width={100}
       height={100}
@@ -17,21 +17,18 @@ const FirstExample = ({}) => (
       height={20}
       alignSelf="center"
       marginTop={12}
-      borderRadius={4}
     />
     <SkeletonPlaceholder.Item
       width={240}
       height={20}
       alignSelf="center"
       marginTop={12}
-      borderRadius={4}
     />
     <SkeletonPlaceholder.Item
       width={240}
       height={20}
       alignSelf="center"
       marginTop={12}
-      borderRadius={4}
     />
   </SkeletonPlaceholder>
 );
