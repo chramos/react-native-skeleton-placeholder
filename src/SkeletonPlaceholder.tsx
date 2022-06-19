@@ -39,7 +39,7 @@ type SkeletonPlaceholderProps = {
   direction?: "left" | "right";
 
   /**
-   * Determines if Skeleton should show placeholders or pure children. 
+   * Determines if Skeleton should show placeholders or its children. 
    * @default true
    */
   enabled?: boolean;
