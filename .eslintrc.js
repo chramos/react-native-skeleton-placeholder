@@ -1,0 +1,30 @@
+module.exports = {
+  root: true,
+  extends: '@react-native-community',
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'simple-import-sort', 'react-native'],
+  ignorePatterns: ['lib/**'],
+  rules: {
+    'react-native/no-unused-styles': 2,
+
+    curly: ['error', 'multi-or-nest', 'consistent'],
+    'no-alert': 'error',
+    'no-else-return': 'error',
+    'no-plusplus': 'error',
+    'no-underscore-dangle': 'error',
+    'no-unneeded-ternary': 'error',
+    'no-var': 'error',
+    'one-var': ['error', 'never'],
+    'object-shorthand': 'error',
+    'prefer-arrow-callback': 'error',
+    'prefer-const': 'error',
+    'prefer-object-spread': 'error',
+    'prefer-template': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
+    'spaced-comment': 'error',
+
+    'simple-import-sort/exports': 'error',
+    'simple-import-sort/imports': 'error',
+    'no-duplicate-imports': 'error',
+  },
+};
