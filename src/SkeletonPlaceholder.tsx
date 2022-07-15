@@ -106,6 +106,8 @@ const SkeletonPlaceholder: FC<SkeletonPlaceholderProps> & {
   if (!layout?.width || !layout.height)
     return <View onLayout={(event) => setLayout(event.nativeEvent.layout)}>{placeholders}</View>;
 
+  // https://github.com/react-native-linear-gradient/react-native-linear-gradient/issues/358
+  // to make transparent gradient we need to use original color with alpha
   const transparentColor =
     highlightColor === undefined
       ? undefined
