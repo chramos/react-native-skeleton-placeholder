@@ -1,4 +1,4 @@
-import MaskedView from '@react-native-masked-view/masked-view';
+import MaskedView from '@react-native-community/masked-view';
 import React, {FC, Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Animated,
