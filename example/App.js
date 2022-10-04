@@ -1,25 +1,33 @@
 import React from 'react';
-import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
+import {SafeAreaView, Text, StyleSheet, View, ScrollView} from 'react-native';
 import FirstExample from './src/FirstExample';
 import SecondExample from './src/SecondExample';
+import ThirdExample from './src/ThirdExample';
 
-const App = ({}) => (
+const App = () => (
   <SafeAreaView style={style.container}>
-    <Text style={style.heading}>First example</Text>
-    <FirstExample />
-    <View style={style.separator} />
-    <Text style={style.heading}>Second example</Text>
-    <SecondExample />
+    <ScrollView style={style.scrollView}>
+      <Text style={style.heading}>First example</Text>
+      <FirstExample />
+      <View style={style.separator} />
+      <Text style={style.heading}>Second example</Text>
+      <SecondExample />
+      <View style={style.separator} />
+      <Text style={style.heading}>Third example</Text>
+      <ThirdExample />
+    </ScrollView>
   </SafeAreaView>
 );
 
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 20,
+  },
+  scrollView: {
+    paddingHorizontal: 24,
   },
   separator: {
-    height: 40,
+    height: 16,
   },
   heading: {
     fontSize: 18,
