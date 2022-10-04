@@ -1,5 +1,5 @@
 import MaskedView from '@react-native-community/masked-view';
-import React, {FC, Fragment, useEffect, useMemo, useRef, useState} from 'react';
+import * as React from 'react';
 import {
   Animated,
   ColorValue,
@@ -51,16 +51,16 @@ type SkeletonPlaceholderItemProps = ViewStyle & {
   children?: JSX.Element | JSX.Element[];
 };
 
-const SkeletonPlaceholder: FC<SkeletonPlaceholderProps> & {
-  Item: FC<SkeletonPlaceholderItemProps>;
+const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
+  Item: React.FC<SkeletonPlaceholderItemProps>;
 } = ({children, enabled, backgroundColor, highlightColor, speed, direction, borderRadius}) => {
-  const [layout, setLayout] = useState<LayoutRectangle>();
-  const animatedValueRef = useRef(new Animated.Value(0));
+  const [layout, setLayout] = React.useState<LayoutRectangle>();
+  const animatedValueRef = React.useRef(new Animated.Value(0));
 
   const windowWidth = Dimensions.get('window').width;
   const animationActive = Boolean(speed && layout?.width && layout?.height);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!animationActive) return;
 
     const loop = Animated.loop(
@@ -75,7 +75,7 @@ const SkeletonPlaceholder: FC<SkeletonPlaceholderProps> & {
     return () => loop.stop();
   }, [animationActive, speed]);
 
-  const animatedGradientStyle = useMemo(() => {
+  const animatedGradientStyle = React.useMemo(() => {
     return {
       ...StyleSheet.absoluteFillObject,
       flexDirection: 'row' as const,
@@ -91,7 +91,7 @@ const SkeletonPlaceholder: FC<SkeletonPlaceholderProps> & {
     };
   }, [direction, windowWidth]);
 
-  const placeholders = useMemo(() => {
+  const placeholders = React.useMemo(() => {
     if (!enabled) return null;
 
     return (
@@ -173,7 +173,7 @@ const transformToPlaceholder = (
   return React.Children.map(rootElement, (element: JSX.Element | null, index: number) => {
     if (!element) return null;
 
-    if (element.type === Fragment)
+    if (element.type === React.Fragment)
       return <>{transformToPlaceholder(element.props?.children, backgroundColor, radius)}</>;
 
     const isPlaceholder =
