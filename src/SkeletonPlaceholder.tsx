@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
+const WINDOW_WIDTH = Dimensions.get('window').width;
+
 const logEnabled = false;
 
 type SkeletonPlaceholderProps = {
@@ -44,11 +46,11 @@ type SkeletonPlaceholderProps = {
    * Determines default border radius for placeholders from both SkeletonPlaceholder.Item and generated from children.
    */
   borderRadius?: number;
+  angle?: number;
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
   style: StyleProp<ViewStyle>;
-  children?: JSX.Element | JSX.Element[];
 };
 
 const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
@@ -56,12 +58,10 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
 } = ({children, enabled, backgroundColor, highlightColor, speed, direction, borderRadius}) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
-
-  const windowWidth = Dimensions.get('window').width;
-  const animationActive = Boolean(speed && layout?.width && layout?.height);
+  const isAnimationReady = Boolean(speed && layout?.width && layout?.height);
 
   React.useEffect(() => {
-    if (!animationActive) return;
+    if (!isAnimationReady) return;
 
     const loop = Animated.loop(
       Animated.timing(animatedValueRef.current, {
@@ -73,7 +73,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
     );
     loop.start();
     return () => loop.stop();
-  }, [animationActive, speed]);
+  }, [isAnimationReady, speed]);
 
   const animatedGradientStyle = React.useMemo(() => {
     return {
@@ -84,12 +84,33 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
           translateX: animatedValueRef.current.interpolate({
             inputRange: [0, 1],
             outputRange:
-              direction === 'right' ? [-windowWidth, windowWidth] : [windowWidth, -windowWidth],
+              direction === 'right' ? [-WINDOW_WIDTH, WINDOW_WIDTH] : [WINDOW_WIDTH, -WINDOW_WIDTH],
           }),
         },
       ],
     };
-  }, [direction, windowWidth]);
+  }, [direction, WINDOW_WIDTH]);
+
+  const getTransparentColor = React.useCallback(() => {
+    if (!highlightColor) {
+      return undefined;
+    }
+
+    switch (highlightColor.length) {
+      case 4:
+        return `${highlightColor}0`; // #fff
+      case 5:
+        return `${highlightColor.substring(0, 4)}0`; // #fff5
+      case 7:
+        return `${highlightColor}00`; //#ffffff
+      case 9:
+        `${highlightColor.substring(0, 7)}00`; // #ffffff00
+      default:
+        throw new Error(
+          `Unsupported color format (${highlightColor}), only hex (#fff, #fff0, #ffffff, #ffffff00) supported.`,
+        );
+    }
+  }, [highlightColor]);
 
   const placeholders = React.useMemo(() => {
     if (!enabled) return null;
@@ -108,28 +129,14 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
 
   // https://github.com/react-native-linear-gradient/react-native-linear-gradient/issues/358
   // to make transparent gradient we need to use original color with alpha
-  const transparentColor =
-    highlightColor === undefined
-      ? undefined
-      : highlightColor.length === 4 // #fff
-      ? `${highlightColor}0`
-      : highlightColor.length === 7 // #ffffff
-      ? `${highlightColor}00`
-      : highlightColor.length === 5 // #fff5
-      ? `${highlightColor.substring(0, 4)}0`
-      : highlightColor.length === 9 // #ffffff00
-      ? `${highlightColor.substring(0, 7)}00`
-      : (() => {
-          throw new Error(
-            `Unsupported color format (${highlightColor}), only hex (#fff, #fff0, #ffffff, #ffffff00) supported.`,
-          );
-        })();
+
+  const transparentColor = getTransparentColor();
 
   return (
     <MaskedView style={{height: layout.height, width: layout.width}} maskElement={placeholders}>
       <View style={[StyleSheet.absoluteFill, {backgroundColor}]} />
 
-      {animationActive && highlightColor !== undefined && transparentColor !== undefined && (
+      {isAnimationReady && highlightColor !== undefined && transparentColor !== undefined && (
         <Animated.View style={animatedGradientStyle}>
           <LinearGradient
             {...gradientProps}
@@ -159,7 +166,11 @@ const gradientProps = {
   style: StyleSheet.absoluteFill,
 };
 
-const getItemStyle = ({children: _, style, ...styleFromProps}: SkeletonPlaceholderItemProps) => {
+const getItemStyle = ({
+  children: _,
+  style,
+  ...styleFromProps
+}: React.PropsWithChildren<SkeletonPlaceholderItemProps>) => {
   return style ? [style, styleFromProps] : styleFromProps;
 };
 

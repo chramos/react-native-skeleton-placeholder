@@ -3,7 +3,7 @@
 SkeletonPlaceholder is a React Native library to easily create an amazing loading effect with FlexBox.<br/>
 Android and iOS
 
-![](https://i.imgur.com/3aDeSTZ.gif)
+![](https://github.com/chramos/react-native-skeleton-placeholder/tree/master/assets/preview.mp4)
 
 ### Installation
 
