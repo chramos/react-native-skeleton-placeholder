@@ -50,7 +50,7 @@ type SkeletonPlaceholderProps = {
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
