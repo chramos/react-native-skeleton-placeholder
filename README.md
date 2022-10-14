@@ -11,26 +11,26 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires **@react-native-community/masked-view** and **react-native-linear-gradient**
+> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
 
 ###### Step #1
 
 Using yarn:
 
 ```bash
-yarn add @react-native-community/masked-view react-native-linear-gradient
+yarn add @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Using npm:
 
 ```bash
-npm install @react-native-community/masked-view react-native-linear-gradient --save
+npm install @react-native-masked-view/masked-view react-native-linear-gradient --save
 ```
 
 If you are running a **react-native** version below 0.60:
 
 ```bash
-react-native link @react-native-community/masked-view react-native-linear-gradient
+react-native link @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Otherwise:
