@@ -104,7 +104,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
       case 7:
         return `${highlightColor}00`; //#ffffff
       case 9:
-        `${highlightColor.substring(0, 7)}00`; // #ffffff00
+        return `${highlightColor.substring(0, 7)}00`; // #ffffff00
       default:
         throw new Error(
           `Unsupported color format (${highlightColor}), only hex (#fff, #fff0, #ffffff, #ffffff00) supported.`,
