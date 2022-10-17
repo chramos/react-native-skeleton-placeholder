@@ -1,4 +1,4 @@
-import MaskedView from '@react-native-community/masked-view';
+import MaskedView from '@react-native-masked-view/masked-view';
 import * as React from 'react';
 import {
   Animated,
@@ -49,7 +49,7 @@ type SkeletonPlaceholderProps = {
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {

@@ -3,30 +3,34 @@
 SkeletonPlaceholder is a React Native library to easily create an amazing loading effect with FlexBox.<br/>
 Android and iOS
 
-![](https://github.com/chramos/react-native-skeleton-placeholder/tree/master/assets/preview.mp4)
+![](https://user-images.githubusercontent.com/20586489/194037825-92efe72b-2e00-407d-8b18-ab949a85e1ea.mp4)
+
+
+
+
 
 ### Installation
 
-> Note: This package requires **@react-native-community/masked-view** and **react-native-linear-gradient**
+> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
 
 ###### Step #1
 
 Using yarn:
 
 ```bash
-yarn add @react-native-community/masked-view react-native-linear-gradient
+yarn add @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Using npm:
 
 ```bash
-npm install @react-native-community/masked-view react-native-linear-gradient --save
+npm install @react-native-masked-view/masked-view react-native-linear-gradient --save
 ```
 
 If you are running a **react-native** version below 0.60:
 
 ```bash
-react-native link @react-native-community/masked-view react-native-linear-gradient
+react-native link @react-native-masked-view/masked-view react-native-linear-gradient
 ```
 
 Otherwise:
