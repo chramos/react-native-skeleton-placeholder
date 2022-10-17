@@ -2,7 +2,7 @@
   "name": "react-native-skeleton-placeholder",
   "version": "5.2.0",
   "description": "SkeletonPlaceholder is a React Native library to easily create an amazing loading effect.",
-  "main": "lib/SkeletonPlaceholder.js",
+  "main": "lib/skeleton-placeholder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . --max-warnings 0",
