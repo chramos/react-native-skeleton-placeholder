@@ -2,7 +2,6 @@ import MaskedView from '@react-native-community/masked-view';
 import * as React from 'react';
 import {
   Animated,
-  ColorValue,
   Dimensions,
   Easing,
   LayoutRectangle,
@@ -25,9 +24,9 @@ type SkeletonPlaceholderProps = {
   /**
    * Determines the color of placeholder.
    */
-  backgroundColor?: ColorValue;
+  backgroundColor?: string;
   /**
-   * Determines the highlight color of placeholder. Only hex values supported (#fff, #fff0, #ffffff, #ffffff00).
+   * Determines the highlight color of placeholder.
    */
   highlightColor?: string;
   /**
@@ -55,7 +54,15 @@ type SkeletonPlaceholderItemProps = ViewStyle & {
 
 const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   Item: React.FC<SkeletonPlaceholderItemProps>;
-} = ({children, enabled, backgroundColor, highlightColor, speed, direction, borderRadius}) => {
+} = ({
+  children,
+  enabled = true,
+  backgroundColor = '#E1E9EE',
+  highlightColor = '#F2F8FC',
+  speed = 800,
+  direction = 'right',
+  borderRadius,
+}) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
   const isAnimationReady = Boolean(speed && layout?.width && layout?.height);
@@ -91,27 +98,6 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
     };
   }, [direction, WINDOW_WIDTH]);
 
-  const getTransparentColor = React.useCallback(() => {
-    if (!highlightColor) {
-      return undefined;
-    }
-
-    switch (highlightColor.length) {
-      case 4:
-        return `${highlightColor}0`; // #fff
-      case 5:
-        return `${highlightColor.substring(0, 4)}0`; // #fff5
-      case 7:
-        return `${highlightColor}00`; //#ffffff
-      case 9:
-        `${highlightColor.substring(0, 7)}00`; // #ffffff00
-      default:
-        throw new Error(
-          `Unsupported color format (${highlightColor}), only hex (#fff, #fff0, #ffffff, #ffffff00) supported.`,
-        );
-    }
-  }, [highlightColor]);
-
   const placeholders = React.useMemo(() => {
     if (!enabled) return null;
 
@@ -122,6 +108,11 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
     );
   }, [backgroundColor, children, borderRadius, enabled]);
 
+  const transparentColor = React.useMemo(
+    () => getTransparentColor(highlightColor.replace(/ /g, '')),
+    [highlightColor],
+  );
+
   if (!enabled || !placeholders) return children;
 
   if (!layout?.width || !layout.height)
@@ -129,8 +120,6 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
 
   // https://github.com/react-native-linear-gradient/react-native-linear-gradient/issues/358
   // to make transparent gradient we need to use original color with alpha
-
-  const transparentColor = getTransparentColor();
 
   return (
     <MaskedView style={{height: layout.height, width: layout.width}} maskElement={placeholders}>
@@ -146,15 +135,6 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
       )}
     </MaskedView>
   );
-};
-
-SkeletonPlaceholder.defaultProps = {
-  backgroundColor: '#E1E9EE',
-  highlightColor: '#F2F8FC',
-  speed: 800,
-  direction: 'right',
-  enabled: true,
-  borderRadius: undefined,
 };
 
 SkeletonPlaceholder.Item = (props) => <View style={getItemStyle(props)}>{props.children}</View>;
@@ -176,7 +156,7 @@ const getItemStyle = ({
 
 const transformToPlaceholder = (
   rootElement: JSX.Element | JSX.Element[] | null,
-  backgroundColor: ColorValue | undefined,
+  backgroundColor: string | undefined,
   radius: number | undefined,
 ) => {
   if (!rootElement) return null;
@@ -247,3 +227,40 @@ const styles = StyleSheet.create({
 });
 
 export default SkeletonPlaceholder;
+
+const getColorType = (color: string) => {
+  if (
+    new RegExp(
+      /^rgba\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|0?\.\d|1(\.0)?)\)$/,
+    ).test(color)
+  ) {
+    return 'rgba';
+  }
+  if (
+    new RegExp(
+      /^rgb\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)\)$/,
+    ).test(color)
+  ) {
+    return 'rgb';
+  }
+
+  if (new RegExp(/^#?([a-f\d]{3,4}|[a-f\d]{6}|[a-f\d]{8})$/i).test(color)) {
+    return 'hex';
+  }
+
+  throw `The provided color ${color} is not a valid (hex | rgb | rgba) color`;
+};
+
+const getTransparentColor = (color: string) => {
+  const type = getColorType(color);
+
+  if (type === 'hex') {
+    if (color.length < 6) {
+      return color.substring(0, 4) + '0';
+    }
+    return color.substring(0, 7) + '00';
+  }
+  //@ts-ignore
+  const [r, g, b] = color.match(/\d+/g);
+  return `rgba(${r},${g},${b},0)`;
+};
