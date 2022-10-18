@@ -5178,10 +5178,10 @@ react-native-linear-gradient@^2.5.6:
   resolved "https://registry.npmjs.org/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz"
   integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
-react-native-skeleton-placeholder@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/react-native-skeleton-placeholder/-/react-native-skeleton-placeholder-5.2.0.tgz#eace7e6ec1a2637e0e19d20210e4d36466c0af4d"
-  integrity sha512-Usy3nvWeyODHkhV+kpsZGnXE/7gyxazk2sKhr7CgFgm3VGl549TPeLBZ1YK8AM46/uFxLd+CJhQ6saJDVhPUmQ==
+react-native-skeleton-placeholder@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/react-native-skeleton-placeholder/-/react-native-skeleton-placeholder-5.2.3.tgz#2dddf1f84d43110b90c22f715b2dbbe2c54732e1"
+  integrity sha512-nikmTfex3oydnZ4prV62KxibMvcu2l2NegsHGtXhsWwFIX5QaKneBohP7etinUq/c2PkSr3ZlfqooDG2yIHRdg==
 
 react-native@0.64.2:
   version "0.64.2"
