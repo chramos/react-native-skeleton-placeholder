@@ -110,8 +110,8 @@ const App = () => {
 
 |      Prop       |                             Description                              |       Type        |  Default  |
 | :-------------: | :------------------------------------------------------------------: | :---------------: | :-------: |
-| backgroundColor |                 Determines the color of placeholder                  |    ColorValue     | _#E1E9EE_ |
-| highlightColor  |            Determines the highlight color of placeholder             |   string (hex\|rgb\|rgba)    | _#F2F8FC_ |
+| backgroundColor |                 Determines the color of placeholder                  |    string       | _#E1E9EE_ |
+| highlightColor  |            Determines the highlight color of placeholder             |   string (hex \| rgb \| rgba)    | _#F2F8FC_ |
 |      speed      | Determines the animation speed in milliseconds. 0 disables animation |      number       |   _800_   |
 |    direction    |                  Determines the animation direction                  | "right" \| "left" |  "right"  |
 |     enabled     |   Determines if Skeleton should show placeholders or its children    |      boolean      |   true    |
