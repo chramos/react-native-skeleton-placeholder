@@ -5,9 +5,7 @@ Android and iOS
 
 ![](https://user-images.githubusercontent.com/20586489/194037825-92efe72b-2e00-407d-8b18-ab949a85e1ea.mp4)
 
-
-
-
+<a href="https://www.buymeacoffee.com/henriqueramos" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 ### Installation
 
