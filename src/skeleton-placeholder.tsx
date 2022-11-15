@@ -46,6 +46,10 @@ type SkeletonPlaceholderProps = {
    */
   borderRadius?: number;
   angle?: number;
+  /**
+   * Determines width of the highlighted area
+   */
+  shimmerWidth?: number;
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
@@ -63,6 +67,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   speed = 800,
   direction = 'right',
   borderRadius,
+  shimmerWidth,
 }) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
@@ -129,7 +134,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
       {isAnimationReady && highlightColor !== undefined && transparentColor !== undefined && (
         <Animated.View style={animatedGradientStyle}>
           <LinearGradient
-            {...gradientProps}
+            {...getGradientProps(shimmerWidth)}
             colors={[transparentColor, highlightColor, transparentColor]}
           />
         </Animated.View>
@@ -141,11 +146,11 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
 SkeletonPlaceholder.Item = (props) => <View style={getItemStyle(props)}>{props.children}</View>;
 SkeletonPlaceholder.Item.displayName = 'SkeletonPlaceholderItem';
 
-const gradientProps = {
+const getGradientProps = (width) => ({
   start: {x: 0, y: 0},
   end: {x: 1, y: 0},
-  style: StyleSheet.absoluteFill,
-};
+  style: {...StyleSheet.absoluteFillObject, width},
+});
 
 const getItemStyle = ({
   children: _,
