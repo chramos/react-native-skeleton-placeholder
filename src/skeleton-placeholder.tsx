@@ -89,6 +89,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   }, [isAnimationReady, speed]);
 
   const animatedGradientStyle = React.useMemo(() => {
+    const animationWidth = WINDOW_WIDTH + (shimmerWidth ?? 0);
     return {
       ...StyleSheet.absoluteFillObject,
       flexDirection: 'row' as const,
@@ -97,12 +98,14 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
           translateX: animatedValueRef.current.interpolate({
             inputRange: [0, 1],
             outputRange:
-              direction === 'right' ? [-WINDOW_WIDTH, WINDOW_WIDTH] : [WINDOW_WIDTH, -WINDOW_WIDTH],
+              direction === 'right'
+                ? [-animationWidth, animationWidth]
+                : [animationWidth, -animationWidth],
           }),
         },
       ],
     };
-  }, [direction, WINDOW_WIDTH]);
+  }, [direction, WINDOW_WIDTH, shimmerWidth]);
 
   const placeholders = React.useMemo(() => {
     if (!enabled) return null;
