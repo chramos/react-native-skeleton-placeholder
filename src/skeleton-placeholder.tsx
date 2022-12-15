@@ -20,7 +20,7 @@ type SkeletonPlaceholderProps = {
   /**
    * Determines component's children.
    */
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
   /**
    * Determines the color of placeholder.
    */
@@ -54,7 +54,7 @@ type SkeletonPlaceholderProps = {
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
   style?: StyleProp<ViewStyle>;
-  children?: React.ReactNode;
+  children?: JSX.Element | JSX.Element[];
 };
 
 const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
