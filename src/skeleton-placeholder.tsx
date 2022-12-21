@@ -50,6 +50,7 @@ type SkeletonPlaceholderProps = {
    * Determines width of the highlighted area
    */
   shimmerWidth?: number;
+  testID?: string;
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
@@ -68,6 +69,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   direction = 'right',
   borderRadius,
   shimmerWidth,
+  testID,
 }) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
@@ -125,13 +127,13 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   if (!enabled || !placeholders) return children;
 
   if (!layout?.width || !layout.height)
-    return <View onLayout={(event) => setLayout(event.nativeEvent.layout)}>{placeholders}</View>;
+    return <View testID={testID} onLayout={(event) => setLayout(event.nativeEvent.layout)}>{placeholders}</View>;
 
   // https://github.com/react-native-linear-gradient/react-native-linear-gradient/issues/358
   // to make transparent gradient we need to use original color with alpha
 
   return (
-    <MaskedView style={{height: layout.height, width: layout.width}} maskElement={placeholders}>
+    <MaskedView testID={testID} style={{height: layout.height, width: layout.width}} maskElement={placeholders}>
       <View style={[StyleSheet.absoluteFill, {backgroundColor}]} />
 
       {isAnimationReady && highlightColor !== undefined && transparentColor !== undefined && (
