@@ -1,275 +1,162 @@
-import MaskedView from '@react-native-masked-view/masked-view';
-import * as React from 'react';
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  LayoutRectangle,
-  StyleProp,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React, {useRef, useState} from 'react';
+import {View, ViewProps} from 'react-native';
+import Animated, {
+  useAnimatedProps,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
+import {Defs, LinearGradient, Mask, Rect, Stop, Svg} from 'react-native-svg';
 
-const WINDOW_WIDTH = Dimensions.get('window').width;
+import SvgRenderer from './svg-rendered';
+import {Measurements} from './types';
 
-const logEnabled = false;
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 type SkeletonPlaceholderProps = {
   /**
-   * Determines component's children.
-   */
-  children: JSX.Element;
-  /**
-   * Determines the color of placeholder.
+   * Background color of the skeleton placeholder
    */
   backgroundColor?: string;
   /**
-   * Determines the highlight color of placeholder.
+   * Highlight color of the skeleton placeholder
    */
   highlightColor?: string;
   /**
-   * Determines the animation speed in milliseconds. Use 0 to disable animation
-   */
-  speed?: number;
-  /**
-   * Determines the animation direction, left or right
-   */
-  direction?: 'left' | 'right';
-  /**
-   * Determines if Skeleton should show placeholders or its children.
-   */
-  enabled?: boolean;
-  /**
-   * Determines default border radius for placeholders from both SkeletonPlaceholder.Item and generated from children.
+   * Default border radius for each skeleton child
    */
   borderRadius?: number;
-  angle?: number;
   /**
-   * Determines width of the highlighted area
+   * Duration of the animation in milliseconds
    */
-  shimmerWidth?: number;
+  animationDuration?: number;
+  /**
+   * Whether the animation should be reversed
+   */
+  reverseAnimation?: boolean;
+  /**
+   * Angle of the gradient in degrees
+   */
+  angle?: number;
 };
-
-type SkeletonPlaceholderItemProps = ViewStyle & {
-  style?: StyleProp<ViewStyle>;
-  children?: React.ReactNode;
-};
-
-const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
-  Item: React.FC<SkeletonPlaceholderItemProps>;
-} = ({
-  children,
-  enabled = true,
-  backgroundColor = '#E1E9EE',
+const SkeletonPlaceholder = ({
+  backgroundColor = '#c0c0c0',
   highlightColor = '#F2F8FC',
-  speed = 800,
-  direction = 'right',
-  borderRadius,
-  shimmerWidth,
-}) => {
-  const [layout, setLayout] = React.useState<LayoutRectangle>();
-  const animatedValueRef = React.useRef(new Animated.Value(0));
-  const isAnimationReady = Boolean(speed && layout?.width && layout?.height);
+  borderRadius = 0,
+  animationDuration = 1500,
+  reverseAnimation = false,
+  angle = 0,
+  children,
+}: React.PropsWithChildren<SkeletonPlaceholderProps>) => {
+  const childRefs = useRef<{ref: View; styles: any}[]>([]);
+
+  const [containerSize, setContainerSize] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const x1 = useSharedValue(-200);
+  const x2 = useSharedValue(-100);
 
   React.useEffect(() => {
-    if (!isAnimationReady) return;
+    x1.value = withRepeat(withTiming(100, {duration: animationDuration}), -1, reverseAnimation);
+    x2.value = withRepeat(withTiming(200, {duration: animationDuration}), -1, reverseAnimation);
+  }, [x1, x2, animationDuration, reverseAnimation]);
 
-    const loop = Animated.loop(
-      Animated.timing(animatedValueRef.current, {
-        toValue: 1,
-        duration: speed,
-        easing: Easing.ease,
-        useNativeDriver: true,
-      }),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [isAnimationReady, speed]);
+  const animatedProps = useAnimatedProps(() => ({
+    x1: `${x1.value}%`,
+    x2: `${x2.value}%`,
+  }));
 
-  const animatedGradientStyle = React.useMemo(() => {
-    const animationWidth = WINDOW_WIDTH + (shimmerWidth ?? 0);
-    return {
-      ...StyleSheet.absoluteFillObject,
-      flexDirection: 'row' as const,
-      transform: [
-        {
-          translateX: animatedValueRef.current.interpolate({
-            inputRange: [0, 1],
-            outputRange:
-              direction === 'right'
-                ? [-animationWidth, animationWidth]
-                : [animationWidth, -animationWidth],
-          }),
-        },
-      ],
+  const measureChild = (index: number): Measurements => {
+    const node = childRefs.current[index];
+    let measurements: Measurements = {
+      x: 0,
+      y: 0,
+      pageX: 0,
+      pageY: 0,
+      width: 0,
+      height: 0,
+      styles: {},
     };
-  }, [direction, WINDOW_WIDTH, shimmerWidth]);
+    if (!node) return measurements;
 
-  const placeholders = React.useMemo(() => {
-    if (!enabled) return null;
-
-    return (
-      <View style={styles.placeholderContainer}>
-        {transformToPlaceholder(children, backgroundColor, borderRadius)}
-      </View>
-    );
-  }, [backgroundColor, children, borderRadius, enabled]);
-
-  const transparentColor = React.useMemo(
-    () => getTransparentColor(highlightColor.replace(/ /g, '')),
-    [highlightColor],
-  );
-
-  if (!enabled || !placeholders) return children;
-
-  if (!layout?.width || !layout.height)
-    return <View onLayout={(event) => setLayout(event.nativeEvent.layout)}>{placeholders}</View>;
-
-  // https://github.com/react-native-linear-gradient/react-native-linear-gradient/issues/358
-  // to make transparent gradient we need to use original color with alpha
-
-  return (
-    <MaskedView style={{height: layout.height, width: layout.width}} maskElement={placeholders}>
-      <View style={[StyleSheet.absoluteFill, {backgroundColor}]} />
-
-      {isAnimationReady && highlightColor !== undefined && transparentColor !== undefined && (
-        <Animated.View style={animatedGradientStyle}>
-          <LinearGradient
-            {...getGradientProps(shimmerWidth)}
-            colors={[transparentColor, highlightColor, transparentColor]}
-          />
-        </Animated.View>
-      )}
-    </MaskedView>
-  );
-};
-
-SkeletonPlaceholder.Item = (props) => <View style={getItemStyle(props)}>{props.children}</View>;
-SkeletonPlaceholder.Item.displayName = 'SkeletonPlaceholderItem';
-
-const getGradientProps = (width) => ({
-  start: {x: 0, y: 0},
-  end: {x: 1, y: 0},
-  style: {...StyleSheet.absoluteFillObject, width},
-});
-
-const getItemStyle = ({
-  children: _,
-  style,
-  ...styleFromProps
-}: React.PropsWithChildren<SkeletonPlaceholderItemProps>) => {
-  return style ? [style, styleFromProps] : styleFromProps;
-};
-
-const transformToPlaceholder = (
-  rootElement: JSX.Element | JSX.Element[] | null,
-  backgroundColor: string | undefined,
-  radius: number | undefined,
-) => {
-  if (!rootElement) return null;
-
-  return React.Children.map(rootElement, (element: JSX.Element | null, index: number) => {
-    if (!element) return null;
-
-    if (element.type === React.Fragment)
-      return <>{transformToPlaceholder(element.props?.children, backgroundColor, radius)}</>;
-
-    const isPlaceholder =
-      !element.props?.children ||
-      typeof element.props.children === 'string' ||
-      (Array.isArray(element.props.children) &&
-        element.props.children.every((x: any) => x == null || typeof x === 'string'));
-    const props = element.props;
-    const style =
-      element.type?.displayName === SkeletonPlaceholder.Item.displayName
-        ? getItemStyle(element.props)
-        : element.props.style;
-
-    const borderRadius = props?.borderRadius ?? style?.borderRadius ?? radius;
-    const width = props?.width ?? style?.width;
-    const height =
-      props?.height ??
-      style?.height ??
-      props?.lineHeight ??
-      style?.lineHeight ??
-      props?.fontSize ??
-      style?.fontSize;
-
-    const finalStyle = [
-      style,
-      isPlaceholder ? [styles.placeholder, {backgroundColor}] : styles.placeholderContainer,
-      {
-        height,
+    node.ref?.measure?.((x, y, width, height, pageX, pageY) => {
+      measurements = {
+        x,
+        y,
         width,
-        borderRadius,
+        height,
+        pageX,
+        pageY,
+        styles: node.styles,
+      };
+    });
+
+    return measurements;
+  };
+
+  const renderRecursive = (node: React.ReactNode): React.ReactNode => {
+    return React.Children.map(
+      node,
+      (child: React.ReactElement<ViewProps & {ref: React.Ref<View>}>) => {
+        if (child.props.children)
+          return React.cloneElement(child, child.props, renderRecursive(child.props.children));
+
+        return React.cloneElement(child, {
+          ...(child.props ?? {}),
+          ref: (ref: View) => {
+            childRefs.current.push({ref, styles: child?.props?.style});
+          },
+        });
       },
-    ];
-
-    logEnabled &&
-      console.log(isPlaceholder ? '[skeleton] placeholder' : '[skeleton] container', {
-        element,
-      });
-
+    );
+  };
+  if (containerSize.width === 0 || containerSize.height === 0) {
     return (
       <View
-        key={index}
-        style={finalStyle}
-        children={
-          isPlaceholder
-            ? undefined
-            : transformToPlaceholder(element.props.children, backgroundColor, borderRadius)
-        }
-      />
+        // eslint-disable-next-line react-native/no-inline-styles
+        style={{position: 'absolute', zIndex: -1, opacity: 0}}
+        onLayout={(event) => {
+          setContainerSize({
+            width: event.nativeEvent.layout.width,
+            height: event.nativeEvent.layout.height,
+          });
+        }}>
+        {renderRecursive(children as any)}
+      </View>
     );
-  });
-};
+  }
 
-const styles = StyleSheet.create({
-  placeholderContainer: {
-    backgroundColor: 'transparent',
-  },
-  placeholder: {
-    overflow: 'hidden',
-  },
-});
+  return (
+    <Svg width={containerSize.width} height={containerSize.height}>
+      <Defs>
+        <AnimatedLinearGradient
+          id="grad"
+          gradientTransform={angle ? `rotate(${angle})` : undefined}
+          animatedProps={animatedProps}>
+          <Stop offset="0%" stopColor={backgroundColor} />
+          <Stop offset="50%" stopColor={highlightColor} />
+          <Stop offset="100%" stopColor={backgroundColor} />
+        </AnimatedLinearGradient>
+
+        <Mask id="shapeMask">
+          <SvgRenderer
+            defaultBorderRadius={borderRadius}
+            measurements={childRefs.current.map((_, index) => measureChild(index))}
+          />
+        </Mask>
+      </Defs>
+      <Rect
+        x="0"
+        y="0"
+        width={containerSize.width}
+        height={containerSize.height}
+        fill="url(#grad)"
+        mask="url(#shapeMask)"
+      />
+    </Svg>
+  );
+};
 
 export default SkeletonPlaceholder;
-
-const getColorType = (color: string) => {
-  if (
-    new RegExp(
-      /^rgba\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|0?\.\d|1(\.0)?)\)$/,
-    ).test(color)
-  ) {
-    return 'rgba';
-  }
-  if (
-    new RegExp(
-      /^rgb\((0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d),(0|255|25[0-4]|2[0-4]\d|1\d\d|0?\d?\d)\)$/,
-    ).test(color)
-  ) {
-    return 'rgb';
-  }
-
-  if (new RegExp(/^#?([a-f\d]{3,4}|[a-f\d]{6}|[a-f\d]{8})$/i).test(color)) {
-    return 'hex';
-  }
-
-  throw `The provided color ${color} is not a valid (hex | rgb | rgba) color`;
-};
-
-const getTransparentColor = (color: string) => {
-  const type = getColorType(color);
-
-  if (type === 'hex') {
-    if (color.length < 6) {
-      return color.substring(0, 4) + '0';
-    }
-    return color.substring(0, 7) + '00';
-  }
-  //@ts-ignore
-  const [r, g, b] = color.match(/\d+/g);
-  return `rgba(${r},${g},${b},0)`;
-};
