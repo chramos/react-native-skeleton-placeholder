@@ -10,6 +10,7 @@ import {Defs, LinearGradient, Mask, Rect, Stop, Svg} from 'react-native-svg';
 
 import SvgRenderer from './svg-rendered';
 import {Measurements} from './types';
+import flatten from './utils/flatten';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -96,7 +97,23 @@ const SkeletonPlaceholder = ({
     return measurements;
   };
 
-  const renderRecursive = (node: React.ReactNode): React.ReactNode => {
+  const flattenedChildren = flatten(children as any);
+  const childrenStyles = flattenedChildren.map((child) => child.props.style);
+  /**
+   * TODO: find a better way to handle this;
+   * Every time a child changes, the hash changes and the component "re-renders".
+   * Then, the calculations are done again and the animation is reset.
+   */
+  const hash = JSON.stringify(childrenStyles);
+
+  React.useEffect(() => {
+    return () => {
+      childRefs.current = [];
+      setContainerSize({width: 0, height: 0});
+    };
+  }, [hash]);
+
+  const renderRecursive = React.useCallback((node: React.ReactNode): React.ReactNode => {
     return React.Children.map(
       node,
       (child: React.ReactElement<ViewProps & {ref: React.Ref<View>}>) => {
@@ -111,52 +128,68 @@ const SkeletonPlaceholder = ({
         });
       },
     );
-  };
-  if (containerSize.width === 0 || containerSize.height === 0) {
+  }, []);
+
+  const MemoizedRender = React.useMemo(() => {
+    if (containerSize.width === 0 || containerSize.height === 0) {
+      return (
+        <View
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{position: 'absolute', zIndex: -1, opacity: 0}}
+          onLayout={(event) => {
+            setContainerSize({
+              width: event.nativeEvent.layout.width,
+              height: event.nativeEvent.layout.height,
+            });
+          }}>
+          {renderRecursive(children as any)}
+        </View>
+      );
+    }
+
     return (
-      <View
-        // eslint-disable-next-line react-native/no-inline-styles
-        style={{position: 'absolute', zIndex: -1, opacity: 0}}
-        onLayout={(event) => {
-          setContainerSize({
-            width: event.nativeEvent.layout.width,
-            height: event.nativeEvent.layout.height,
-          });
-        }}>
-        {renderRecursive(children as any)}
-      </View>
+      <Svg width={containerSize.width} height={containerSize.height}>
+        <Defs>
+          <AnimatedLinearGradient
+            id="grad"
+            gradientTransform={angle ? `rotate(${angle})` : undefined}
+            animatedProps={animatedProps}>
+            <Stop offset="0%" stopColor={backgroundColor} />
+            <Stop offset="50%" stopColor={highlightColor} />
+            <Stop offset="100%" stopColor={backgroundColor} />
+          </AnimatedLinearGradient>
+
+          <Mask id="shapeMask">
+            <SvgRenderer
+              defaultBorderRadius={borderRadius}
+              measurements={childRefs.current.map((_, index) => measureChild(index))}
+            />
+          </Mask>
+        </Defs>
+        <Rect
+          x="0"
+          y="0"
+          width={containerSize.width}
+          height={containerSize.height}
+          fill="url(#grad)"
+          mask="url(#shapeMask)"
+        />
+      </Svg>
     );
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    containerSize.width,
+    containerSize.height,
+    animatedProps,
+    angle,
+    backgroundColor,
+    highlightColor,
+    borderRadius,
+    childRefs,
+    renderRecursive,
+  ]);
 
-  return (
-    <Svg width={containerSize.width} height={containerSize.height}>
-      <Defs>
-        <AnimatedLinearGradient
-          id="grad"
-          gradientTransform={angle ? `rotate(${angle})` : undefined}
-          animatedProps={animatedProps}>
-          <Stop offset="0%" stopColor={backgroundColor} />
-          <Stop offset="50%" stopColor={highlightColor} />
-          <Stop offset="100%" stopColor={backgroundColor} />
-        </AnimatedLinearGradient>
-
-        <Mask id="shapeMask">
-          <SvgRenderer
-            defaultBorderRadius={borderRadius}
-            measurements={childRefs.current.map((_, index) => measureChild(index))}
-          />
-        </Mask>
-      </Defs>
-      <Rect
-        x="0"
-        y="0"
-        width={containerSize.width}
-        height={containerSize.height}
-        fill="url(#grad)"
-        mask="url(#shapeMask)"
-      />
-    </Svg>
-  );
+  return MemoizedRender;
 };
 
 export default SkeletonPlaceholder;
