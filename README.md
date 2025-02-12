@@ -9,29 +9,23 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
+> Note: This package requires **react-native-svg** and **react-native-reanimated**
 
 ###### Step #1
 
 Using yarn:
 
 ```bash
-yarn add @react-native-masked-view/masked-view react-native-linear-gradient
+yarn add react-native-svg react-native-reanimated
 ```
 
 Using npm:
 
 ```bash
-npm install @react-native-masked-view/masked-view react-native-linear-gradient --save
+npm install react-native-svg react-native-reanimated --save
 ```
 
-If you are running a **react-native** version below 0.60:
-
-```bash
-react-native link @react-native-masked-view/masked-view react-native-linear-gradient
-```
-
-Otherwise:
+Run pod install:
 
 ```bash
 cd ios
@@ -45,21 +39,17 @@ pod install
 Using yarn:
 
 ```bash
-yarn add react-native-skeleton-placeholder
+yarn add react-native-skeleton-placeholder@6.0.0-beta.1
 ```
 
 Using npm:
 
 ```bash
-npm install react-native-skeleton-placeholder --save
+npm install react-native-skeleton-placeholder@6.0.0-beta.1 --save
 ```
 
 ### Usage
 
-There are two ways to use this package:
-
-with **SkeletonPlacehoder.Item** 🆕
-
 ```javascript
 import React from 'react';
 import {View} from 'react-native';
@@ -68,33 +58,11 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const App = () => {
   return (
     <SkeletonPlaceholder borderRadius={4}>
-      <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
-        <SkeletonPlaceholder.Item width={60} height={60} borderRadius={50} />
-        <SkeletonPlaceholder.Item marginLeft={20}>
-          <SkeletonPlaceholder.Item width={120} height={20} />
-          <SkeletonPlaceholder.Item marginTop={6} width={80} height={20} />
-        </SkeletonPlaceholder.Item>
-      </SkeletonPlaceholder.Item>
-    </SkeletonPlaceholder>
-  );
-};
-```
-
-or with **View**, **Text** or **Image**
-
-```javascript
-import React from 'react';
-import {View} from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-
-const App = () => {
-  return (
-    <SkeletonPlaceholder borderRadius={4}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+      <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
         <View style={{width: 60, height: 60, borderRadius: 50}} />
-        <View style={{marginLeft: 20}}>
-          <Image style={{width: 120, height: 20}} src={requre('./src/assets/image.png')} />
-          <Text style={{marginTop: 6, fontSize: 14, lineHeight: 18}}>Hello world</Text>
+        <View style={{marginLeft: 20, gap: 6}}>
+          <View style={{width: 120, height: 20}} />
+          <View style={{width: 80, height: 20}} />
         </View>
       </View>
     </SkeletonPlaceholder>
@@ -106,14 +74,14 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|      Prop       |                             Description                              |       Type        |  Default  |
-| :-------------: | :------------------------------------------------------------------: | :---------------: | :-------: |
-| backgroundColor |                 Determines the color of placeholder                  |    string       | _#E1E9EE_ |
-| highlightColor  |            Determines the highlight color of placeholder             |   string (hex \| rgb \| rgba)    | _#F2F8FC_ |
-|      speed      | Determines the animation speed in milliseconds. 0 disables animation |      number       |   _800_   |
-|    direction    |                  Determines the animation direction                  | "right" \| "left" |  "right"  |
-|     enabled     |   Determines if Skeleton should show placeholders or its children    |      boolean      |   true    |
-|  borderRadius   |          Determines default border radius for placeholders           |      number       | undefined |
+|      Prop       |                             Description                              |            Type             |  Default  |
+| :-------------: | :------------------------------------------------------------------: | :-------------------------: | :-------: |
+| backgroundColor |                 Determines the color of placeholder                  |           string            | _#E1E9EE_ |
+| highlightColor  |            Determines the highlight color of placeholder             | string (hex \| rgb \| rgba) | _#F2F8FC_ |
+|      speed      | Determines the animation speed in milliseconds. 0 disables animation |           number            |   _800_   |
+|    direction    |                  Determines the animation direction                  |      "right" \| "left"      |  "right"  |
+|     enabled     |   Determines if Skeleton should show placeholders or its children    |           boolean           |   true    |
+|  borderRadius   |          Determines default border radius for placeholders           |           number            | undefined |
 
 #### SkeletonPlaceholder.Item
 
