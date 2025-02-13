@@ -39,13 +39,13 @@ pod install
 Using yarn:
 
 ```bash
-yarn add react-native-skeleton-placeholder@6.0.0-beta.3
+yarn add react-native-skeleton-placeholder@6.0.0-beta.4
 ```
 
 Using npm:
 
 ```bash
-npm install react-native-skeleton-placeholder@6.0.0-beta.3 --save
+npm install react-native-skeleton-placeholder@6.0.0-beta.4 --save
 ```
 
 ### Usage
