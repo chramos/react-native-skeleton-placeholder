@@ -39,13 +39,13 @@ pod install
 Using yarn:
 
 ```bash
-yarn add react-native-skeleton-placeholder@6.0.0-beta.1
+yarn add react-native-skeleton-placeholder@6.0.0-beta.3
 ```
 
 Using npm:
 
 ```bash
-npm install react-native-skeleton-placeholder@6.0.0-beta.1 --save
+npm install react-native-skeleton-placeholder@6.0.0-beta.3 --save
 ```
 
 ### Usage
@@ -74,20 +74,22 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|      Prop       |                             Description                              |            Type             |  Default  |
-| :-------------: | :------------------------------------------------------------------: | :-------------------------: | :-------: |
-| backgroundColor |                 Determines the color of placeholder                  |           string            | _#E1E9EE_ |
-| highlightColor  |            Determines the highlight color of placeholder             | string (hex \| rgb \| rgba) | _#F2F8FC_ |
-|      speed      | Determines the animation speed in milliseconds. 0 disables animation |           number            |   _800_   |
-|    direction    |                  Determines the animation direction                  |      "right" \| "left"      |  "right"  |
-|     enabled     |   Determines if Skeleton should show placeholders or its children    |           boolean           |   true    |
-|  borderRadius   |          Determines default border radius for placeholders           |           number            | undefined |
+|         Prop          |                             Description                              |            Type             |  Default  |
+| :-------------------: | :------------------------------------------------------------------: | :-------------------------: | :-------: |
+|    backgroundColor    |                 Determines the color of placeholder                  |           string            | _#C0C0C0_ |
+|    highlightColor     |            Determines the highlight color of placeholder             | string (hex \| rgb \| rgba) | _#F2F8FC_ |
+|     borderRadius      |          Determines default border radius for placeholders           |           number            | undefined |
+|   animationDuration   | Determines the animation speed in milliseconds. 0 disables animation |           number            |  _1500_   |
+| animationBackAndForth |            Whether the Animation should go back and forth            |           boolean           |  _false_  |
+|         angle         |                   Angle of the gradient in degrees                   |           number            |    _0_    |
 
-#### SkeletonPlaceholder.Item
+<!-- |     enabled     |   Determines if Skeleton should show placeholders or its children    |           boolean           |   true    | -->
+
+<!-- #### SkeletonPlaceholder.Item
 
 | Prop |            Description            | Type | Default |
 | :--: | :-------------------------------: | :--: | :-----: |
-| any  | Any view style props was accepted | any  |
+| any  | Any view style props was accepted | any  | -->
 
 ### Contributing
 

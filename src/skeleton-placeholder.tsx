@@ -33,9 +33,9 @@ type SkeletonPlaceholderProps = {
    */
   animationDuration?: number;
   /**
-   * Whether the animation should be reversed
+   * Whether the animation should go back and forth
    */
-  reverseAnimation?: boolean;
+  animationBackAndForth?: boolean;
   /**
    * Angle of the gradient in degrees
    */
@@ -46,7 +46,7 @@ const SkeletonPlaceholder = ({
   highlightColor = '#F2F8FC',
   borderRadius = 0,
   animationDuration = 1500,
-  reverseAnimation = false,
+  animationBackAndForth = false,
   angle = 0,
   children,
 }: React.PropsWithChildren<SkeletonPlaceholderProps>) => {
@@ -62,9 +62,17 @@ const SkeletonPlaceholder = ({
   const x2 = useSharedValue(-100);
 
   React.useEffect(() => {
-    x1.value = withRepeat(withTiming(100, {duration: animationDuration}), -1, reverseAnimation);
-    x2.value = withRepeat(withTiming(200, {duration: animationDuration}), -1, reverseAnimation);
-  }, [x1, x2, animationDuration, reverseAnimation]);
+    x1.value = withRepeat(
+      withTiming(100, {duration: animationDuration}),
+      -1,
+      animationBackAndForth,
+    );
+    x2.value = withRepeat(
+      withTiming(200, {duration: animationDuration}),
+      -1,
+      animationBackAndForth,
+    );
+  }, [x1, x2, animationDuration, animationBackAndForth]);
 
   const animatedProps = useAnimatedProps(() => ({
     x1: `${x1.value}%`,
