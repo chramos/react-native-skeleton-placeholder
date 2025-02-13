@@ -1,26 +1,26 @@
 import React from 'react';
 import {Rect} from 'react-native-svg';
 
-import {Measurements} from './types';
+import {RectType} from './types';
 
 type SvgRendererProps = {
-  measurements: Measurements[];
+  rects: RectType[];
   defaultBorderRadius: number;
 };
-const SvgRenderer = ({measurements, defaultBorderRadius = 0}: SvgRendererProps) => {
+const SvgRenderer = ({rects, defaultBorderRadius = 0}: SvgRendererProps) => {
   return (
     <>
-      {measurements.map(({pageX, pageY, width, height, styles}, index) => {
+      {rects.map(({x, y, width, height, ...styles}, index) => {
         return (
           <Rect
             key={index}
             fillOpacity={1}
-            x={pageX}
-            y={pageY}
+            x={x}
+            y={y}
             width={width}
             height={height}
             rx={Number(styles?.borderRadius) || defaultBorderRadius}
-            fill="white"
+            fill="white" //  it's important to make the svg mask to work
             stroke={styles?.borderColor}
             strokeWidth={styles?.borderWidth}
           />

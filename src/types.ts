@@ -1,11 +1,8 @@
 import {ViewStyle} from 'react-native';
 
-export type Measurements = {
+export type RectType = {
   x: number;
   y: number;
-  pageX: number;
-  pageY: number;
   width: number;
   height: number;
-  styles: ViewStyle;
-};
+} & ViewStyle;

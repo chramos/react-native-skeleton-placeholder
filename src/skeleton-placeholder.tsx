@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {View, ViewProps} from 'react-native';
+import React, {useState} from 'react';
+import {LayoutRectangle} from 'react-native';
 import Animated, {
   useAnimatedProps,
   useSharedValue,
@@ -8,8 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {Defs, LinearGradient, Mask, Rect, Stop, Svg} from 'react-native-svg';
 
+import Measure from './measure';
 import SvgRenderer from './svg-rendered';
-import {Measurements} from './types';
+import {RectType} from './types';
 import flatten from './utils/flatten';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
@@ -49,11 +50,12 @@ const SkeletonPlaceholder = ({
   angle = 0,
   children,
 }: React.PropsWithChildren<SkeletonPlaceholderProps>) => {
-  const childRefs = useRef<{ref: View; styles: any}[]>([]);
-
-  const [containerSize, setContainerSize] = useState({
-    width: 0,
-    height: 0,
+  const [content, setContent] = useState<{
+    container?: LayoutRectangle;
+    rects: RectType[];
+  }>({
+    container: undefined,
+    rects: [],
   });
 
   const x1 = useSharedValue(-200);
@@ -69,86 +71,35 @@ const SkeletonPlaceholder = ({
     x2: `${x2.value}%`,
   }));
 
-  const measureChild = (index: number): Measurements => {
-    const node = childRefs.current[index];
-    let measurements: Measurements = {
-      x: 0,
-      y: 0,
-      pageX: 0,
-      pageY: 0,
-      width: 0,
-      height: 0,
-      styles: {},
-    };
-    if (!node) return measurements;
-
-    node.ref?.measure?.((x, y, width, height, pageX, pageY) => {
-      measurements = {
-        x,
-        y,
-        width,
-        height,
-        pageX,
-        pageY,
-        styles: node.styles,
-      };
-    });
-
-    return measurements;
-  };
-
   const flattenedChildren = flatten(children as any);
   const childrenStyles = flattenedChildren.map((child) => child.props.style);
   /**
    * TODO: find a better way to handle this;
-   * Every time a child changes, the hash changes and the component "re-renders".
-   * Then, the calculations are done again and the animation is reset.
+   * We need to know when the children styles change to recalculate the content
    */
   const hash = JSON.stringify(childrenStyles);
 
   React.useEffect(() => {
     return () => {
-      childRefs.current = [];
-      setContainerSize({width: 0, height: 0});
+      setContent({container: undefined, rects: []});
     };
   }, [hash]);
 
-  const renderRecursive = React.useCallback((node: React.ReactNode): React.ReactNode => {
-    return React.Children.map(
-      node,
-      (child: React.ReactElement<ViewProps & {ref: React.Ref<View>}>) => {
-        if (child.props.children)
-          return React.cloneElement(child, child.props, renderRecursive(child.props.children));
-
-        return React.cloneElement(child, {
-          ...(child.props ?? {}),
-          ref: (ref: View) => {
-            childRefs.current.push({ref, styles: child?.props?.style});
-          },
-        });
-      },
-    );
-  }, []);
-
-  const MemoizedRender = React.useMemo(() => {
-    if (containerSize.width === 0 || containerSize.height === 0) {
+  const Render = React.useCallback(() => {
+    if (!content.container) {
       return (
-        <View
-          // eslint-disable-next-line react-native/no-inline-styles
-          style={{position: 'absolute', zIndex: -1, opacity: 0}}
-          onLayout={(event) => {
-            setContainerSize({
-              width: event.nativeEvent.layout.width,
-              height: event.nativeEvent.layout.height,
-            });
+        <Measure
+          defaultBackgroundColor={backgroundColor}
+          onComplete={(container, rects) => {
+            setContent({container, rects});
           }}>
-          {renderRecursive(children as any)}
-        </View>
+          {children}
+        </Measure>
       );
     }
 
     return (
-      <Svg width={containerSize.width} height={containerSize.height}>
+      <Svg width={content.container?.width} height={content.container?.height}>
         <Defs>
           <AnimatedLinearGradient
             id="grad"
@@ -158,19 +109,15 @@ const SkeletonPlaceholder = ({
             <Stop offset="50%" stopColor={highlightColor} />
             <Stop offset="100%" stopColor={backgroundColor} />
           </AnimatedLinearGradient>
-
           <Mask id="shapeMask">
-            <SvgRenderer
-              defaultBorderRadius={borderRadius}
-              measurements={childRefs.current.map((_, index) => measureChild(index))}
-            />
+            <SvgRenderer defaultBorderRadius={borderRadius} rects={content.rects} />
           </Mask>
         </Defs>
         <Rect
           x="0"
           y="0"
-          width={containerSize.width}
-          height={containerSize.height}
+          width={content.container?.width}
+          height={content.container?.height}
           fill="url(#grad)"
           mask="url(#shapeMask)"
         />
@@ -178,18 +125,16 @@ const SkeletonPlaceholder = ({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    containerSize.width,
-    containerSize.height,
+    content.container,
     animatedProps,
     angle,
     backgroundColor,
     highlightColor,
     borderRadius,
-    childRefs,
-    renderRecursive,
+    content.rects,
   ]);
 
-  return MemoizedRender;
+  return <Render />;
 };
 
 export default SkeletonPlaceholder;
