@@ -74,14 +74,14 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|         Prop          |                             Description                              |            Type             |  Default  |
-| :-------------------: | :------------------------------------------------------------------: | :-------------------------: | :-------: |
-|    backgroundColor    |                 Determines the color of placeholder                  |           string            | _#C0C0C0_ |
-|    highlightColor     |            Determines the highlight color of placeholder             | string (hex \| rgb \| rgba) | _#F2F8FC_ |
-|     borderRadius      |          Determines default border radius for placeholders           |           number            | undefined |
-|   animationDuration   | Determines the animation speed in milliseconds. 0 disables animation |           number            |  _1500_   |
-| animationBackAndForth |            Whether the Animation should go back and forth            |           boolean           |  _false_  |
-|         angle         |                   Angle of the gradient in degrees                   |           number            |    _0_    |
+|         Prop          |                             Description                              |            Type             |   Default   |
+| :-------------------: | :------------------------------------------------------------------: | :-------------------------: | :---------: |
+|    backgroundColor    |                 Determines the color of placeholder                  |           string            |  _#C0C0C0_  |
+|    highlightColor     |            Determines the highlight color of placeholder             | string (hex \| rgb \| rgba) |  _#F2F8FC_  |
+|     borderRadius      |          Determines default border radius for placeholders           |           number            | _undefined_ |
+|   animationDuration   | Determines the animation speed in milliseconds. 0 disables animation |           number            |   _1500_    |
+| animationBackAndForth |            Whether the Animation should go back and forth            |           boolean           |   _false_   |
+|         angle         |                   Angle of the gradient in degrees                   |           number            | _undefined_ |
 
 <!-- |     enabled     |   Determines if Skeleton should show placeholders or its children    |           boolean           |   true    | -->
 
