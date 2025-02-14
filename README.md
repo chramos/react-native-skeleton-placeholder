@@ -39,16 +39,20 @@ pod install
 Using yarn:
 
 ```bash
-yarn add react-native-skeleton-placeholder@6.0.0-beta.4
+yarn add react-native-skeleton-placeholder@6.0.0-beta.5
 ```
 
 Using npm:
 
 ```bash
-npm install react-native-skeleton-placeholder@6.0.0-beta.4 --save
+npm install react-native-skeleton-placeholder@6.0.0-beta.5 --save
 ```
 
 ### Usage
+
+There are two ways to use this package:
+
+1. Using **View**
 
 ```javascript
 import React from 'react';
@@ -60,11 +64,32 @@ const App = () => {
     <SkeletonPlaceholder borderRadius={4}>
       <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
         <View style={{width: 60, height: 60, borderRadius: 50}} />
-        <View style={{marginLeft: 20, gap: 6}}>
+        <View style={{gap: 6}}>
           <View style={{width: 120, height: 20}} />
           <View style={{width: 80, height: 20}} />
         </View>
       </View>
+    </SkeletonPlaceholder>
+  );
+};
+```
+
+2. Using **SkeletonPlaceholder.Item** or **SkeletonPlaceholder.View**
+
+```javascript
+import React from 'react';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
+const App = () => {
+  return (
+    <SkeletonPlaceholder borderRadius={4}>
+      <SkeletonPlaceholder.Item flexDirection="row" alignItems="center" gap={20}>
+        <SkeletonPlaceholder.Item width={60} height={60} borderRadius={50} />
+        <SkeletonPlaceholder.Item gap={6}>
+          <SkeletonPlaceholder.Item width={120} height={20} />
+          <SkeletonPlaceholder.Item width={80} height={20} />
+        </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder.Item>
     </SkeletonPlaceholder>
   );
 };
@@ -85,11 +110,17 @@ const App = () => {
 
 <!-- |     enabled     |   Determines if Skeleton should show placeholders or its children    |           boolean           |   true    | -->
 
-<!-- #### SkeletonPlaceholder.Item
+#### SkeletonPlaceholder.Item
 
-| Prop |            Description            | Type | Default |
-| :--: | :-------------------------------: | :--: | :-----: |
-| any  | Any view style props was accepted | any  | -->
+| Prop |           Description            | Type | Default |
+| :--: | :------------------------------: | :--: | :-----: |
+| any  | Any view style props is accepted | any  |
+
+#### SkeletonPlaceholder.View
+
+| Prop |           Description            | Type | Default |
+| :--: | :------------------------------: | :--: | :-----: |
+| any  | Any view style props is accepted | any  |
 
 ### Contributing
 

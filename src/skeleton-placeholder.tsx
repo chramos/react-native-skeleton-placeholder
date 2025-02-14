@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {LayoutRectangle} from 'react-native';
+import {LayoutRectangle, View, ViewStyle} from 'react-native';
 import Animated, {
   useAnimatedProps,
   useSharedValue,
@@ -146,3 +146,13 @@ const SkeletonPlaceholder = ({
 };
 
 export default SkeletonPlaceholder;
+
+type SkeletonPlaceholderItemProps = {
+  children?: React.ReactNode;
+} & ViewStyle;
+// @ts-ignore
+SkeletonPlaceholder.Item = ({children, onLayout, ...style}: SkeletonPlaceholderItemProps) =>
+  // on layout is important for the measure component
+  React.createElement(View, {style, onLayout}, children);
+
+SkeletonPlaceholder.View = SkeletonPlaceholder.Item;
