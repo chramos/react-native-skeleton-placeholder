@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {LayoutRectangle, View, ViewProps, ViewStyle} from 'react-native';
+import {LayoutRectangle, Text, View, ViewProps, ViewStyle} from 'react-native';
 
 import {RectType} from './types';
 
@@ -27,7 +27,7 @@ const Measure = ({
       return React.Children.map(
         node,
         (child: React.ReactElement<ViewProps & {ref: React.Ref<View>}>) => {
-          if (child.props.children) {
+          if (child.props?.children && typeof child?.props?.children !== 'string') {
             return React.cloneElement(
               child,
               child.props,
@@ -46,26 +46,58 @@ const Measure = ({
 
           totalElements.current = totalElements.current + 1;
 
+          const style = child.props?.style ?? child.props;
+          const ref = React.createRef<Text>();
+
           return React.cloneElement(child, {
             ...(child.props ?? {}),
             style: {
               ...((child.props.style ?? {}) as ViewStyle),
               backgroundColor: defaultBackgroundColor,
+              opacity: 0, // when using other components other than View, the layout appears for a fraction of seconds, so I think this is a good workaround
             },
-            onLayout: (event) => {
-              /**
-               * Mark this element as measured
-               */
-              measuredElements.current = measuredElements.current + 1;
+            /**
+             * If the element is a text, we need to measure the text
+             */
+            ...(typeof child.props.children === 'string'
+              ? {
+                  ref,
+                  onTextLayout: (event) => {
+                    /**
+                     * Mark this element as measured
+                     */
+                    measuredElements.current = measuredElements.current + 1;
 
-              callback({
-                x: event.nativeEvent.layout.x,
-                y: event.nativeEvent.layout.y,
-                width: event.nativeEvent.layout.width,
-                height: event.nativeEvent.layout.height,
-                ...((child.props.style ?? {}) as ViewStyle),
-              });
-            },
+                    ref.current?.measure((x, y) => {
+                      event.nativeEvent.lines.forEach((line) => {
+                        callback({
+                          x: x + line.x,
+                          y: y + line.y,
+                          width: line.width,
+                          height: line.ascender,
+                          ...((style ?? {}) as ViewStyle),
+                        });
+                      });
+                    });
+                  },
+                }
+              : {
+                  onLayout: (event) => {
+                    /**
+                     * Mark this element as measured
+                     */
+                    measuredElements.current = measuredElements.current + 1;
+                    const {x, y, width, height} = event.nativeEvent.layout;
+
+                    callback({
+                      x,
+                      y,
+                      width,
+                      height,
+                      ...((style ?? {}) as ViewStyle),
+                    });
+                  },
+                }),
           });
         },
       );

@@ -80,7 +80,7 @@ const SkeletonPlaceholder = ({
   }));
 
   const flattenedChildren = flatten(children as any);
-  const childrenStyles = flattenedChildren.map((child) => child.props.style);
+  const childrenStyles = flattenedChildren.map((child) => child.props?.style);
   /**
    * TODO: find a better way to handle this;
    * We need to know when the children styles change to recalculate the content

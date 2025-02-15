@@ -5,4 +5,4 @@ export type RectType = {
   y: number;
   width: number;
   height: number;
-} & ViewStyle;
+} & Partial<Omit<ViewStyle, 'width' | 'height'>>;

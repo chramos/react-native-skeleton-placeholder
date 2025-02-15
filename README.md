@@ -39,24 +39,25 @@ pod install
 Using yarn:
 
 ```bash
-yarn add react-native-skeleton-placeholder@6.0.0-beta.5
+yarn add react-native-skeleton-placeholder@6.0.0-beta.7
 ```
 
 Using npm:
 
 ```bash
-npm install react-native-skeleton-placeholder@6.0.0-beta.5 --save
+npm install react-native-skeleton-placeholder@6.0.0-beta.7 --save
 ```
 
 ### Usage
 
 There are two ways to use this package:
 
-1. Using **View**
+1. Using **View**, **Text** or **Image**
+   > Note: The component you choose to use must accept onLayout prop. An especial case is the **Text** component, which must accept onTextLayout and ref prop. You don't need to worry if you are importing these components from `react-native` package.
 
 ```javascript
 import React from 'react';
-import {View} from 'react-native';
+import {View, Text, Image} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const App = () => {
@@ -67,6 +68,19 @@ const App = () => {
         <View style={{gap: 6}}>
           <View style={{width: 120, height: 20}} />
           <View style={{width: 80, height: 20}} />
+        </View>
+        <View style={{gap: 16}}>
+          <Image
+            source={{uri: 'https://picsum.photos/200/300'}}
+            style={{width: 200, height: 200}}
+          />
+          <Text style={{fontSize: 24}}>Do aute nulla aliquip deserunt ex est dolor</Text>
+          <Text>
+            Lorem dolore dolore Lorem culpa mollit et nulla nostrud aliqua commodo eiusmod culpa. Ut
+            laborum officia sit laboris deserunt nisi ipsum deserunt incididunt. Amet elit veniam
+            sit occaecat incididunt mollit non. Aliqua qui laborum qui est incididunt labore. Dolore
+            aute enim ex enim cupidatat officia esse incididunt officia mollit ex deserunt.
+          </Text>
         </View>
       </View>
     </SkeletonPlaceholder>
