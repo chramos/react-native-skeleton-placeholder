@@ -10,11 +10,19 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import DefaultLinearGradient from 'react-native-linear-gradient';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 
 const logEnabled = false;
+
+type LinearGradientProps = {
+  colors: (string | number)[];
+  start?: {x: number; y: number};
+  end?: {x: number; y: number};
+  style?: StyleProp<ViewStyle>;
+  [key: string]: any;
+};
 
 type SkeletonPlaceholderProps = {
   /**
@@ -50,6 +58,11 @@ type SkeletonPlaceholderProps = {
    * Determines width of the highlighted area
    */
   shimmerWidth?: number;
+  /**
+   * A custom LinearGradient component, e.g. from expo-linear-gradient.
+   * Defaults to react-native-linear-gradient.
+   */
+  LinearGradient?: React.ComponentType<LinearGradientProps>;
 };
 
 type SkeletonPlaceholderItemProps = ViewStyle & {
@@ -68,6 +81,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   direction = 'right',
   borderRadius,
   shimmerWidth,
+  LinearGradient = DefaultLinearGradient,
 }) => {
   const [layout, setLayout] = React.useState<LayoutRectangle>();
   const animatedValueRef = React.useRef(new Animated.Value(0));
@@ -138,7 +152,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
         <Animated.View style={animatedGradientStyle}>
           <LinearGradient
             {...getGradientProps(shimmerWidth)}
-            colors={[transparentColor, highlightColor, transparentColor]}
+            colors={[transparentColor, highlightColor, transparentColor] as (string | number)[]}
           />
         </Animated.View>
       )}
