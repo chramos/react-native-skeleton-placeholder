@@ -9,7 +9,7 @@ Android and iOS
 
 ### Installation
 
-> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient**
+> Note: This package requires **@react-native-masked-view/masked-view** and **react-native-linear-gradient** (or any compatible linear gradient library passed via the `LinearGradient` prop)
 
 ###### Step #1
 
@@ -106,14 +106,30 @@ const App = () => {
 
 #### SkeletonPlaceholder
 
-|      Prop       |                             Description                              |       Type        |  Default  |
-| :-------------: | :------------------------------------------------------------------: | :---------------: | :-------: |
-| backgroundColor |                 Determines the color of placeholder                  |    string       | _#E1E9EE_ |
-| highlightColor  |            Determines the highlight color of placeholder             |   string (hex \| rgb \| rgba)    | _#F2F8FC_ |
-|      speed      | Determines the animation speed in milliseconds. 0 disables animation |      number       |   _800_   |
-|    direction    |                  Determines the animation direction                  | "right" \| "left" |  "right"  |
-|     enabled     |   Determines if Skeleton should show placeholders or its children    |      boolean      |   true    |
-|  borderRadius   |          Determines default border radius for placeholders           |      number       | undefined |
+|      Prop       |                                                        Description                                                         |            Type             |           Default            |
+| :-------------: | :------------------------------------------------------------------------------------------------------------------------: | :-------------------------: | :--------------------------: |
+| backgroundColor |                                            Determines the color of placeholder                                             |           string            |          _#E1E9EE_           |
+| highlightColor  |                                       Determines the highlight color of placeholder                                        | string (hex \| rgb \| rgba) |          _#F2F8FC_           |
+|      speed      |                            Determines the animation speed in milliseconds. 0 disables animation                            |           number            |            _800_             |
+|    direction    |                                             Determines the animation direction                                             |      "right" \| "left"      |           "right"            |
+|     enabled     |                              Determines if Skeleton should show placeholders or its children                               |           boolean           |             true             |
+|  borderRadius   |                                     Determines default border radius for placeholders                                      |           number            |          undefined           |
+| LinearGradient  | A custom LinearGradient component, e.g. from `expo-linear-gradient`. Receives `colors`, `start`, `end`, and `style` props. |        ComponentType        | react-native-linear-gradient |
+
+#### Expo (expo-linear-gradient) usage
+
+If you are using Expo and want to use `expo-linear-gradient` instead of `react-native-linear-gradient`, pass it via the `LinearGradient` prop:
+
+```javascript
+import {LinearGradient} from 'expo-linear-gradient';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+
+const App = () => (
+  <SkeletonPlaceholder LinearGradient={LinearGradient}>
+    <SkeletonPlaceholder.Item width={120} height={20} />
+  </SkeletonPlaceholder>
+);
+```
 
 #### SkeletonPlaceholder.Item
 
