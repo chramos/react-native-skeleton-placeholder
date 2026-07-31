@@ -91,7 +91,7 @@ const SkeletonPlaceholder: React.FC<SkeletonPlaceholderProps> & {
   const animatedGradientStyle = React.useMemo(() => {
     const animationWidth = WINDOW_WIDTH + (shimmerWidth ?? 0);
     return {
-      ...StyleSheet.absoluteFillObject,
+      ...StyleSheet.absoluteFill,
       flexDirection: 'row' as const,
       transform: [
         {
@@ -152,7 +152,7 @@ SkeletonPlaceholder.Item.displayName = 'SkeletonPlaceholderItem';
 const getGradientProps = (width) => ({
   start: {x: 0, y: 0},
   end: {x: 1, y: 0},
-  style: {...StyleSheet.absoluteFillObject, width},
+  style: {...StyleSheet.absoluteFill, width},
 });
 
 const getItemStyle = ({
